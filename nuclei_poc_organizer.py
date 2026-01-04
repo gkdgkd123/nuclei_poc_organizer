@@ -22,7 +22,7 @@ https://github.com/gkdgkd123/nuclei_poc_organize
      - 严格禁止生成 '_1', '_2' 等冗余后缀。
 
 用法 (Usage):
-  python3 nuclei_organizer.py -i <source_dir> -o <output_dir>
+  python3 nuclei_poc_organizer.py -i <source_dir> -o <output_dir>
 
 依赖 (Requirements):
   pip install PyYAML
