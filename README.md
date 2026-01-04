@@ -34,7 +34,7 @@ pip install PyYAML
 ### 使用方法
 
 ```bash
-python3 nuclei_organizer.py -i <输入目录> -o <输出目录>
+python3 nuclei_poc_organizer.py -i <输入目录> -o <输出目录>
 ```
 
 ### 示例
@@ -42,7 +42,7 @@ python3 nuclei_organizer.py -i <输入目录> -o <输出目录>
 假设你有一堆杂乱的 POC 在 `raw_pocs` 目录下：
 
 ```bash
-python3 nuclei_organizer.py -i ./raw_pocs -o ./clean_pocs
+python3 nuclei_poc_organizer.py -i ./raw_pocs -o ./clean_pocs
 ```
 
 运行结束后，`clean_pocs` 目录结构将变得非常整洁：
