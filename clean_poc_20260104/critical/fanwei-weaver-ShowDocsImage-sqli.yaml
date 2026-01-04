@@ -1,0 +1,26 @@
+id: fanwei-weaver-ShowDocsImage-sqli.(还需补充)
+
+info:
+  name: Fanwei ShowDocsImage sql injection vulnerability(��΢ ShowDocsImage sqlע��©��)
+  author: linfeng7z
+  severity: critical
+  tags: fanwei,weaver,sqli
+  metadata:
+    quark-query: '(app="��΢-Эͬ�칫OA") AND app: "Weaver-OA"'
+    fofa-query: 'app="泛微-E-Weaver"'
+
+requests:
+  - raw:
+      - |-
+        GET /weaver/weaver.docs.docs.ShowDocsImageServlet?docId=* HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/605.1.15 (KHTML,like Gecko) 
+        Accept-Encoding: gzip, deflate
+        Connection: close
+
+    req-condition: true
+    matchers:
+      - type: dsl
+        dsl:
+          - "status_code_1 == 200"
+        condition: and

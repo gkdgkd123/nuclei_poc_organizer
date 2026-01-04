@@ -1,0 +1,19 @@
+id: yonyou-nc-file-fileupload
+
+info:
+  name: 用友NC /portal/file 任意文件上传
+  author: SleepingBag945
+  severity: critical
+  description: 接口检测，具体利用无法使用nuclei完成。
+
+http:
+  - raw:
+      - |
+        POST /portal/file?cmd=putFile&pk_org=1 HTTP/1.1
+        Host: {{Hostname}}
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - "status_code == 200 && contains_all(body, '异常信息显示','请求不是一个multipart请求')"

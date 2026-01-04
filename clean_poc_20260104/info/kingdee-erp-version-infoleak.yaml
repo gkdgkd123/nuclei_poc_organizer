@@ -1,0 +1,27 @@
+id: kingdee-erp-version-infoleak
+
+info:
+  name: 金蝶云星空版本信息泄露
+  author: SleepingBag945
+  severity: info
+
+http:
+  - raw:
+      - |
+        GET /Kingdee.BOS.ServiceFacade.ServicesStub.ClienterService.GetBrandResource.common.kdsvc HTTP/1.1
+        Host: {{Hostname}}
+      - |
+        GET /k3Cloud/Kingdee.BOS.ServiceFacade.ServicesStub.ClienterService.GetBrandResource.common.kdsvc HTTP/1.1
+        Host: {{Hostname}}
+
+    stop-at-first-match: true
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 200
+      - type: word
+        words:
+          - "DefaultName"
+        part: body
+        condition: and

